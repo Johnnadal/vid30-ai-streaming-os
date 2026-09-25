@@ -33,6 +33,7 @@ export default function VegaCustomDrawerContent(props: any) {
         >
           <View style={styles.header}>
             <Image source={require('../assets/kepler.png')} style={styles.profilePic} />
+            <Text style={styles.appTitle}>Vid30 TV</Text>
             <Text style={styles.userName}>Pioneer Tom</Text>
             <Text style={styles.switchAccount}>Switch account</Text>
           </View>
@@ -70,7 +71,7 @@ export default function VegaCustomDrawerContent(props: any) {
           )}
         </DrawerContentScrollView>
 
-        {/* Settings button at bottom */}
+        {/* Settings button + footer at bottom */}
         <View style={styles.footer}>
           <SpatialNavigationFocusableView
             onSelect={() => {
@@ -86,6 +87,7 @@ export default function VegaCustomDrawerContent(props: any) {
               </View>
             )}
           </SpatialNavigationFocusableView>
+          <Text style={styles.footerText}>Vid30 by Vega OS</Text>
         </View>
       </View>
     </SpatialNavigationRoot>
@@ -128,6 +130,13 @@ const drawerStyles = StyleSheet.create({
       fontSize: scaledPixels(36),
       fontWeight: '600',
       marginTop: scaledPixels(20),
+    },
+    appTitle: {
+      color: colors.text,
+      fontSize: scaledPixels(48),
+      fontWeight: 'bold',
+      marginTop: scaledPixels(20),
+      letterSpacing: 1,
     },
     switchAccount: {
       color: colors.textSecondary,
@@ -227,5 +236,12 @@ const drawerStyles = StyleSheet.create({
     },
     cogIconTextFocused: {
       color: colors.textOnPrimary,
+    },
+    footerText: {
+      color: colors.textSecondary,
+      fontSize: scaledPixels(18),
+      textAlign: 'center',
+      marginTop: scaledPixels(12),
+      fontStyle: 'italic',
     },
   });
