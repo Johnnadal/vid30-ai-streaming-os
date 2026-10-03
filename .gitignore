@@ -12,6 +12,9 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+.env
+.kiro/*
+.kiro
 
 # Package managers
 package-lock.json
