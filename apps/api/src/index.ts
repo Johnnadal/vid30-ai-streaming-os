@@ -1,5 +1,7 @@
 import Fastify from "fastify";
 
+import type { AIProvider } from "./ai/AIProvider";
+import { BedrockProvider } from "./ai/BedrockProvider";
 import { RuleBasedAIProvider } from "./ai/RuleBasedAIProvider";
 import { MockCatalogProvider } from "./catalog/MockCatalogProvider";
 import type { DiscoverRequest } from "./catalog/types";
@@ -9,10 +11,20 @@ const app = Fastify({
   logger: true,
 });
 
-// Providers and service are instantiated once at startup.
-// Swap RuleBasedAIProvider → BedrockProvider here when ready.
+// Select AI provider via AI_PROVIDER env var.
+// Default: "bedrock" in production, "rule-based" for local dev without AWS.
+function buildAIProvider(): AIProvider {
+  const provider = process.env.AI_PROVIDER ?? "bedrock";
+  if (provider === "rule-based") {
+    app.log.info("AIProvider: RuleBasedAIProvider (rule-based)");
+    return new RuleBasedAIProvider();
+  }
+  app.log.info("AIProvider: BedrockProvider (amazon.nova-lite-v1:0)");
+  return new BedrockProvider();
+}
+
 const discoveryService = new DiscoveryService(
-  new RuleBasedAIProvider(),
+  buildAIProvider(),
   new MockCatalogProvider(),
 );
 
