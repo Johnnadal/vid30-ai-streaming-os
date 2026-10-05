@@ -1,10 +1,20 @@
 import Fastify from "fastify";
-import { searchCatalog } from "./catalog/mockCatalog";
-import { DiscoverRequest, DiscoveryIntent } from "./catalog/types";
+
+import { RuleBasedAIProvider } from "./ai/RuleBasedAIProvider";
+import { MockCatalogProvider } from "./catalog/MockCatalogProvider";
+import type { DiscoverRequest } from "./catalog/types";
+import { DiscoveryService } from "./discovery/DiscoveryService";
 
 const app = Fastify({
   logger: true,
 });
+
+// Providers and service are instantiated once at startup.
+// Swap RuleBasedAIProvider → BedrockProvider here when ready.
+const discoveryService = new DiscoveryService(
+  new RuleBasedAIProvider(),
+  new MockCatalogProvider(),
+);
 
 app.get("/health", async () => {
   return { status: "ok" };
@@ -20,32 +30,16 @@ app.post<{ Body: DiscoverRequest }>("/discover", async (request, reply) => {
     });
   }
 
-  const intent: DiscoveryIntent = {};
-  const normalizedQuery = query.toLowerCase();
-
-  if (normalizedQuery.includes("dark")) {
-    intent.mood = ["dark"];
+  try {
+    const { intent, results } = await discoveryService.discover(query);
+    return { intent, results };
+  } catch (err) {
+    app.log.error(err);
+    return reply.status(500).send({
+      error: "DISCOVERY_ERROR",
+      message: "An error occurred during content discovery.",
+    });
   }
-
-  if (normalizedQuery.includes("cinematic")) {
-    intent.cinematic = true;
-    intent.mood = [...(intent.mood ?? []), "cinematic"];
-  }
-
-  const durationMatch = normalizedQuery.match(
-    /(?:under|less than|moins de)\s+(\d+)\s*(?:minutes?|min)?/
-  );
-
-  if (durationMatch) {
-    intent.maxDurationMinutes = Number(durationMatch[1]);
-  }
-
-  const results = searchCatalog(intent);
-
-  return {
-    intent,
-    results,
-  };
 });
 
 async function start() {
