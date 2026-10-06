@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "outDir": "dist",
+    "rootDir": ".."
+  },
+  "include": [
+    "src/**/*.ts",
+    "../api/src/ai/**/*.ts",
+    "../api/src/catalog/**/*.ts",
+    "../api/src/discovery/**/*.ts"
+  ],
+  "exclude": [
+    "../api/src/index.ts",
+    "../api/src/discover.test.ts",
+    "../api/src/ai/bedrock.smoke.ts"
+  ]
+}

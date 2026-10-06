@@ -13,7 +13,11 @@ export class BedrockProvider implements AIProvider {
   private modelId: string;
 
   constructor() {
-    const region = process.env.AWS_REGION || "eu-west-3";
+    // AWS_BEDROCK_REGION allows overriding the region for Bedrock calls independently
+    // from the Lambda execution region. Required for cross-region inference profiles.
+    const region = process.env.AWS_BEDROCK_REGION
+      ?? process.env.AWS_REGION
+      ?? "eu-west-3";
     // eu. prefix is required for cross-region inference profiles in eu-west-3
     this.modelId =
       process.env.BEDROCK_MODEL_ID || "eu.amazon.nova-lite-v1:0";
