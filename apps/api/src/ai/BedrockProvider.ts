@@ -14,8 +14,9 @@ export class BedrockProvider implements AIProvider {
 
   constructor() {
     const region = process.env.AWS_REGION || "eu-west-3";
+    // eu. prefix is required for cross-region inference profiles in eu-west-3
     this.modelId =
-      process.env.BEDROCK_MODEL_ID || "amazon.nova-lite-v1:0";
+      process.env.BEDROCK_MODEL_ID || "eu.amazon.nova-lite-v1:0";
 
     // Le SDK AWS récupère automatiquement les credentials depuis l'environnement
     this.client = new BedrockRuntimeClient({ region });
