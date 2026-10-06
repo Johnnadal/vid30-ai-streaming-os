@@ -4354,6 +4354,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@multi-tv/lambda@workspace:apps/lambda":
+  version: 0.0.0-use.local
+  resolution: "@multi-tv/lambda@workspace:apps/lambda"
+  dependencies:
+    "@aws-sdk/client-bedrock-runtime": "npm:^3.1146.0"
+    "@types/aws-lambda": "npm:^8.10.149"
+    "@types/node": "npm:^24.5.2"
+    typescript: "npm:^5.9.2"
+    zod: "npm:^4.6.5"
+  languageName: unknown
+  linkType: soft
+
 "@multi-tv/shared-ui@workspace:*, @multi-tv/shared-ui@workspace:packages/shared-ui":
   version: 0.0.0-use.local
   resolution: "@multi-tv/shared-ui@workspace:packages/shared-ui"
@@ -5899,6 +5911,13 @@ __metadata:
   version: 3.0.9
   resolution: "@tsconfig/react-native@npm:3.0.9"
   checksum: 10c0/d07e35d03e37d413957f42f89bc22f4f4fd6d7ba11c33f4c594fb48fea9b32f1cb77f81d5a5374e910053085678be0cd278fb580adabaad069ce44a29262f8f7
+  languageName: node
+  linkType: hard
+
+"@types/aws-lambda@npm:^8.10.149":
+  version: 8.10.164
+  resolution: "@types/aws-lambda@npm:8.10.164"
+  checksum: 10c0/cc78160e3b76e78a28cc232780777e3ca91cde0a021c14d816dcefeb45dfcd912f0ed409dbeb1516b08c1af1b764a6664e61838672cd6645f6387e57d682548b
   languageName: node
   linkType: hard
 
