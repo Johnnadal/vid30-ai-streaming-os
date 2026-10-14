@@ -44,10 +44,11 @@ STRICT RULES:
 
 FIELD DEFINITIONS:
 - mood: the emotional tone. Must be exactly one of: "dark" | "funny" | "romantic" | "mysterious" — or null if none fits.
-- cinematic: true if the viewer wants a visually impressive, epic, or film-like experience. Also true for references like "like a Nolan film", "blockbuster", "arthouse".
-- maxDurationMinutes: the maximum runtime in minutes. Convert "under 2 hours" → 120, "90 min" → 90, "short" → 90. Null if not specified.
-- genres: array of relevant genres from this list only: ["action", "comedy", "drama", "horror", "mystery", "noir", "romance", "sci-fi", "thriller"]. Infer from context clues ("like Blade Runner" → sci-fi, "spy" → thriller).
-- keywords: 2–5 meaningful content descriptors extracted from the query (e.g. "space", "detective", "rain", "cold war"). Exclude stop words.
+- cinematic: true if the viewer wants a visually impressive, epic, or film-like experience. Also true for references like "like a Nolan film", "blockbuster", "arthouse", "like Blade Runner".
+- maxDurationMinutes: the maximum runtime in minutes. Convert "under 2 hours" → 120, "90 min" → 90, "short" → 90, "shorter" (comparative) → use context. Null if not specified.
+- genres: array of relevant genres from this list only: ["action", "comedy", "drama", "horror", "mystery", "noir", "romance", "sci-fi", "thriller"]. Infer from context clues ("like Blade Runner" → ["sci-fi","thriller"], "spy" → ["thriller"], "family evening" → ["comedy","drama"]).
+- keywords: 2–5 meaningful content descriptors extracted from the query (e.g. "space", "detective", "rain", "cold war"). Exclude stop words and genre names.
+- watchingContext: the social viewing situation. Must be exactly one of: "solo" | "couple" | "family" | "friends" — or null if not inferable. Examples: "family movie night" → "family", "date night" → "couple", "with friends" → "friends", "by myself" → "solo". NOTE: this is a discovery hint only, not a safety filter.
 
 JSON structure:
 {
@@ -55,7 +56,8 @@ JSON structure:
   "cinematic": boolean,
   "maxDurationMinutes": number | null,
   "genres": string[],
-  "keywords": string[]
+  "keywords": string[],
+  "watchingContext": "solo" | "couple" | "family" | "friends" | null
 }`;
 
     const command = new ConverseCommand({

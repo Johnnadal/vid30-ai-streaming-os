@@ -11,7 +11,7 @@ const service = new DiscoveryService(
   new MockCatalogProvider(),
 );
 
-// ── SPRINT 2 — existing tests (adapted to new discover(request) signature) ─
+// ── SPRINT 2 — existing tests (preserved) ─────────────────────────────────
 
 describe("AI Discovery — intent extraction", () => {
   it("extracts mood=dark from query", async () => {
@@ -84,7 +84,7 @@ describe("AI Discovery — edge cases", () => {
   });
 });
 
-// ── SPRINT 3 — Family Mode tests ───────────────────────────────────────────
+// ── SPRINT 2 — Family Mode tests (preserved) ──────────────────────────────
 
 describe("Family Mode — strict filter", () => {
   it("familyMode:true excludes all R-rated films", async () => {
@@ -99,25 +99,13 @@ describe("Family Mode — strict filter", () => {
   });
 
   it("familyMode:false includes R-rated films when they match", async () => {
-    // "horror" mood maps to films that include R-rated items in the catalog
-    // We verify at least one R-rated film is eligible (not filtered out by familyMode)
     const result = await service.discover({
       query: "I want something dark mysterious.",
       familyMode: false,
     });
-    // Results may or may not include R-rated films depending on scoring,
-    // but no familyMode filter should have been applied
     expect(result.intent.familyMode).toBe(false);
-    // Verify R-rated films were not excluded (some dark/mysterious films are R)
-    const ratedR = result.results.filter((i) => i.contentRating === "R");
-    // At least one R-rated film exists in dark/mysterious — none should be blocked
-    // (this confirms the filter was NOT applied)
     expect(result.results.length).toBeGreaterThan(0);
-    // intent carries familyMode:false
     expect(result.intent.familyMode).toBe(false);
-    // No item should have been incorrectly excluded — spot-check Obsidian City (R, dark)
-    // It may or may not appear depending on scoring but the filter didn't block it
-    void ratedR; // acknowledged — presence depends on scoring
   });
 
   it("familyMode:true with mood dark returns only familySafe results under 90 min", async () => {
@@ -132,7 +120,6 @@ describe("Family Mode — strict filter", () => {
   });
 
   it("familyMode:true with no matching familySafe films returns empty results", async () => {
-    // "horror under 10 minutes" — no film matches at all (duration too short)
     const result = await service.discover({
       query: "I want something horror under 10 minutes.",
       familyMode: true,
@@ -188,7 +175,6 @@ describe("Family Mode — catalog metadata", () => {
       expect(typeof item.contentRating).toBe("string");
       expect(["G", "PG", "PG-13", "R"]).toContain(item.contentRating);
       expect(typeof item.familySafe).toBe("boolean");
-      // Verify familySafe is consistent with contentRating
       if (item.contentRating === "R") {
         expect(item.familySafe).toBe(false);
       } else {
@@ -198,8 +184,6 @@ describe("Family Mode — catalog metadata", () => {
   });
 
   it("scoring tie-break: shorter film appears before longer film at equal score", async () => {
-    // Both "Neon Rain" (82 min, PG-13) and "The Last Signal" (88 min, PG-13) match
-    // dark + cinematic. Neon Rain should appear first (shorter).
     const result = await service.discover({
       query: "I want something dark, cinematic and under 90 minutes.",
       familyMode: true,
@@ -210,5 +194,186 @@ describe("Family Mode — catalog metadata", () => {
     if (neonIdx !== -1 && signalIdx !== -1) {
       expect(neonIdx).toBeLessThan(signalIdx);
     }
+  });
+});
+
+// ── SPRINT 3 — watchingContext extraction ─────────────────────────────────
+
+describe("Sprint 3 — watchingContext extraction", () => {
+  it("extracts watchingContext=family for 'family movie night'", async () => {
+    const provider = new RuleBasedAIProvider();
+    const intent = await provider.extractDiscoveryIntent(
+      "A family movie night — something fun for everyone.",
+    );
+    expect(intent.watchingContext).toBe("family");
+  });
+
+  it("extracts watchingContext=couple for 'date night'", async () => {
+    const provider = new RuleBasedAIProvider();
+    const intent = await provider.extractDiscoveryIntent(
+      "Something romantic for a date night.",
+    );
+    expect(intent.watchingContext).toBe("couple");
+  });
+
+  it("extracts watchingContext=friends for 'with friends'", async () => {
+    const provider = new RuleBasedAIProvider();
+    const intent = await provider.extractDiscoveryIntent(
+      "A fun thriller to watch with friends this weekend.",
+    );
+    expect(intent.watchingContext).toBe("friends");
+  });
+
+  it("extracts watchingContext=solo for 'alone'", async () => {
+    const provider = new RuleBasedAIProvider();
+    const intent = await provider.extractDiscoveryIntent(
+      "Something dark and cinematic to watch alone.",
+    );
+    expect(intent.watchingContext).toBe("solo");
+  });
+
+  it("watchingContext defaults to null when not mentioned", async () => {
+    const provider = new RuleBasedAIProvider();
+    const intent = await provider.extractDiscoveryIntent(
+      "I want something dark and cinematic under 90 minutes.",
+    );
+    expect(intent.watchingContext).toBeNull();
+  });
+
+  it("intent always contains watchingContext field (null or string)", async () => {
+    const result = await service.discover({
+      query: "Something mysterious.",
+    });
+    expect("watchingContext" in result.intent).toBe(true);
+    expect(
+      result.intent.watchingContext === null ||
+        typeof result.intent.watchingContext === "string",
+    ).toBe(true);
+  });
+});
+
+// ── SPRINT 3 — Reference scenario tests ───────────────────────────────────
+
+describe("Sprint 3 — reference scenarios", () => {
+  it("'Un film sombre et cinématographique de moins de 90 minutes' — French query parsed correctly", async () => {
+    const result = await service.discover({
+      query: "Un film sombre et cinématographique de moins de 90 minutes.",
+    });
+    // mood dark — "sombre" is supported
+    expect(result.intent.mood).toBe("dark");
+    // cinematic — "cinématographique" is supported
+    expect(result.intent.cinematic).toBe(true);
+    // duration — "de moins de 90 minutes" is supported
+    expect(result.intent.maxDurationMinutes).toBe(90);
+    // strict duration filter applied
+    for (const item of result.results) {
+      expect(item.durationMinutes).toBeLessThanOrEqual(90);
+    }
+    expect(result.results.length).toBeGreaterThan(0);
+  });
+
+  it("'Something like Blade Runner but shorter' — infers sci-fi + thriller genres", async () => {
+    const provider = new RuleBasedAIProvider();
+    const intent = await provider.extractDiscoveryIntent(
+      "Something like Blade Runner but shorter.",
+    );
+    expect(intent.genres).toContain("sci-fi");
+    expect(intent.genres).toContain("thriller");
+    // cinematic implied by Blade Runner reference
+    expect(intent.cinematic).toBe(true);
+  });
+
+  it("'A family movie night' — watchingContext=family and results returned", async () => {
+    const result = await service.discover({
+      query: "A family movie night, something fun for everyone.",
+      familyMode: true,
+    });
+    expect(result.intent.watchingContext).toBe("family");
+    expect(result.intent.familyMode).toBe(true);
+    for (const item of result.results) {
+      expect(item.familySafe).toBe(true);
+    }
+  });
+
+  it("combined: ambiance + genre + duration + context all present", async () => {
+    const result = await service.discover({
+      query:
+        "A dark mysterious thriller under 100 minutes to watch with friends.",
+    });
+    expect(result.intent.mood).toBe("dark");
+    expect(result.intent.genres).toContain("thriller");
+    expect(result.intent.maxDurationMinutes).toBe(100);
+    expect(result.intent.watchingContext).toBe("friends");
+    for (const item of result.results) {
+      expect(item.durationMinutes).toBeLessThanOrEqual(100);
+    }
+  });
+});
+
+// ── SPRINT 3 — keyword scoring ─────────────────────────────────────────────
+
+describe("Sprint 3 — keyword scoring", () => {
+  it("keyword overlap boosts relevant items — 'space' hits sci-fi descriptions", async () => {
+    const result = await service.discover({
+      query: "Something about space and a mysterious signal.",
+    });
+    // "space" and "signal" should boost items with those words in title/description
+    expect(result.results.length).toBeGreaterThan(0);
+    // "The Last Signal" and "Borrowed Orbit" mention space/signal
+    const titles = result.results.map((i) => i.title);
+    const hasSpaceOrSignal = titles.some(
+      (t) =>
+        t.includes("Signal") ||
+        t.includes("Orbit") ||
+        t.includes("Station"),
+    );
+    expect(hasSpaceOrSignal).toBe(true);
+  });
+
+  it("watchingContext=friends boosts action/thriller/comedy genres", async () => {
+    const result = await service.discover({
+      query: "Something fun to watch with friends.",
+    });
+    expect(result.intent.watchingContext).toBe("friends");
+    // Results should skew towards action/comedy/thriller
+    expect(result.results.length).toBeGreaterThan(0);
+    const hasAffinityGenre = result.results.some((item) =>
+      item.genres.some((g) =>
+        ["action", "comedy", "thriller", "sci-fi"].includes(g),
+      ),
+    );
+    expect(hasAffinityGenre).toBe(true);
+  });
+
+  it("watchingContext=couple boosts romance/drama genres", async () => {
+    const result = await service.discover({
+      query: "A nice film for a couple evening.",
+    });
+    expect(result.intent.watchingContext).toBe("couple");
+    expect(result.results.length).toBeGreaterThan(0);
+    const hasRomanceDrama = result.results.some((item) =>
+      item.genres.some((g) => ["romance", "drama"].includes(g)),
+    );
+    expect(hasRomanceDrama).toBe(true);
+  });
+});
+
+// ── SPRINT 3 — 'under X hours' duration parsing ───────────────────────────
+
+describe("Sprint 3 — duration parsing", () => {
+  it("'under 2 hours' parses to maxDurationMinutes=120", async () => {
+    const provider = new RuleBasedAIProvider();
+    const intent = await provider.extractDiscoveryIntent(
+      "Something dark under 2 hours.",
+    );
+    expect(intent.maxDurationMinutes).toBe(120);
+  });
+
+  it("'less than 90 minutes' parses to maxDurationMinutes=90", async () => {
+    const provider = new RuleBasedAIProvider();
+    const intent = await provider.extractDiscoveryIntent(
+      "Something dark less than 90 minutes.",
+    );
+    expect(intent.maxDurationMinutes).toBe(90);
   });
 });
