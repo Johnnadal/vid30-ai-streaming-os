@@ -1,5 +1,10 @@
 import type { CatalogItem } from "./CatalogProvider";
 
+/**
+ * Demo catalog — 24 films.
+ * contentRating and familySafe are demo classifications, not official certifications.
+ * familySafe = true iff contentRating ∈ ["G", "PG", "PG-13"].
+ */
 export const mockCatalog: CatalogItem[] = [
   // --- DARK / CINEMATIC ---
   {
@@ -11,6 +16,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["sci-fi", "thriller"],
     mood: ["dark", "mysterious"],
     cinematic: true,
+    contentRating: "PG-13",
+    familySafe: true,
   },
   {
     id: "the-last-signal",
@@ -21,6 +28,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["sci-fi", "drama"],
     mood: ["dark", "mysterious"],
     cinematic: true,
+    contentRating: "PG-13",
+    familySafe: true,
   },
   {
     id: "obsidian-city",
@@ -31,6 +40,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["thriller", "noir"],
     mood: ["dark", "mysterious"],
     cinematic: true,
+    contentRating: "R",
+    familySafe: false,
   },
   {
     id: "hollow-echo",
@@ -41,6 +52,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["horror", "thriller"],
     mood: ["dark", "mysterious"],
     cinematic: true,
+    contentRating: "R",
+    familySafe: false,
   },
   {
     id: "the-iron-meridian",
@@ -51,6 +64,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["sci-fi", "drama"],
     mood: ["dark"],
     cinematic: true,
+    contentRating: "PG-13",
+    familySafe: true,
   },
   {
     id: "pale-embers",
@@ -61,6 +76,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["drama"],
     mood: ["dark"],
     cinematic: true,
+    contentRating: "R",
+    familySafe: false,
   },
 
   // --- MYSTERIOUS ---
@@ -73,6 +90,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["thriller", "mystery"],
     mood: ["mysterious"],
     cinematic: true,
+    contentRating: "PG-13",
+    familySafe: true,
   },
   {
     id: "deep-water-station",
@@ -83,6 +102,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["sci-fi", "horror"],
     mood: ["mysterious", "dark"],
     cinematic: true,
+    contentRating: "R",
+    familySafe: false,
   },
   {
     id: "the-amber-room",
@@ -93,6 +114,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["mystery", "drama"],
     mood: ["mysterious"],
     cinematic: true,
+    contentRating: "PG-13",
+    familySafe: true,
   },
 
   // --- FUNNY / COMEDY ---
@@ -105,6 +128,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["comedy"],
     mood: ["funny"],
     cinematic: true,
+    contentRating: "PG",
+    familySafe: true,
   },
   {
     id: "operation-croissant",
@@ -115,6 +140,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["comedy", "action"],
     mood: ["funny"],
     cinematic: false,
+    contentRating: "PG",
+    familySafe: true,
   },
   {
     id: "reboot-day",
@@ -125,6 +152,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["comedy", "sci-fi"],
     mood: ["funny"],
     cinematic: false,
+    contentRating: "PG",
+    familySafe: true,
   },
   {
     id: "three-cats-one-job",
@@ -135,6 +164,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["comedy"],
     mood: ["funny"],
     cinematic: false,
+    contentRating: "G",
+    familySafe: true,
   },
   {
     id: "the-understudies",
@@ -145,6 +176,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["comedy", "drama"],
     mood: ["funny", "romantic"],
     cinematic: true,
+    contentRating: "PG",
+    familySafe: true,
   },
 
   // --- ROMANTIC ---
@@ -157,6 +190,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["drama"],
     mood: ["romantic"],
     cinematic: true,
+    contentRating: "PG",
+    familySafe: true,
   },
   {
     id: "the-violet-hour",
@@ -167,6 +202,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["romance", "drama"],
     mood: ["romantic"],
     cinematic: true,
+    contentRating: "PG",
+    familySafe: true,
   },
   {
     id: "letters-from-lisbon",
@@ -177,6 +214,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["romance", "drama"],
     mood: ["romantic"],
     cinematic: true,
+    contentRating: "PG-13",
+    familySafe: true,
   },
   {
     id: "between-two-tides",
@@ -187,6 +226,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["romance", "drama"],
     mood: ["romantic"],
     cinematic: true,
+    contentRating: "PG",
+    familySafe: true,
   },
 
   // --- ACTION / THRILLER ---
@@ -199,6 +240,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["thriller", "action"],
     mood: ["dark", "mysterious"],
     cinematic: true,
+    contentRating: "PG-13",
+    familySafe: true,
   },
   {
     id: "fracture-line",
@@ -209,6 +252,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["action", "thriller"],
     mood: ["dark"],
     cinematic: true,
+    contentRating: "PG-13",
+    familySafe: true,
   },
   {
     id: "zero-approach",
@@ -219,6 +264,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["thriller"],
     mood: ["dark", "mysterious"],
     cinematic: true,
+    contentRating: "PG-13",
+    familySafe: true,
   },
 
   // --- SCI-FI ---
@@ -231,6 +278,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["sci-fi", "drama"],
     mood: ["mysterious", "dark"],
     cinematic: true,
+    contentRating: "PG-13",
+    familySafe: true,
   },
   {
     id: "cascade-protocol",
@@ -241,6 +290,8 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["sci-fi", "thriller"],
     mood: ["dark"],
     cinematic: true,
+    contentRating: "PG-13",
+    familySafe: true,
   },
   {
     id: "the-soft-machine",
@@ -251,5 +302,7 @@ export const mockCatalog: CatalogItem[] = [
     genres: ["sci-fi", "drama"],
     mood: ["dark", "mysterious"],
     cinematic: true,
+    contentRating: "R",
+    familySafe: false,
   },
 ];

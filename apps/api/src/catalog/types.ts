@@ -5,4 +5,6 @@
 
 export type DiscoverRequest = {
   query: string;
+  /** Optional. When true, only familySafe content is returned. Default: false. */
+  familyMode?: boolean;
 };

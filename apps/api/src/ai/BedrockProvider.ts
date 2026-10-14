@@ -2,7 +2,7 @@ import {
   BedrockRuntimeClient,
   ConverseCommand,
 } from "@aws-sdk/client-bedrock-runtime";
-import type { AIProvider } from "./AIProvider";
+import type { AIProvider, AIProviderContext } from "./AIProvider";
 import {
   DiscoveryIntentSchema,
   type DiscoveryIntent,
@@ -22,20 +22,25 @@ export class BedrockProvider implements AIProvider {
     this.modelId =
       process.env.BEDROCK_MODEL_ID || "eu.amazon.nova-lite-v1:0";
 
-    // Le SDK AWS récupère automatiquement les credentials depuis l'environnement
+    // AWS SDK loads credentials automatically from environment / ~/.aws/credentials
     this.client = new BedrockRuntimeClient({ region });
   }
 
   async extractDiscoveryIntent(
     query: string,
+    context?: AIProviderContext,
   ): Promise<DiscoveryIntent> {
+    const familyContext = context?.familyMode
+      ? `\nContext: this is a family viewing session. Prioritize age-appropriate genres (animation, adventure, comedy, family drama). Avoid horror, violence, and adult themes.`
+      : "";
+
     const systemPrompt = `You are Vid30's intent parser. Your only job is to convert a viewer's request into a structured discovery intent.
 
 STRICT RULES:
 - Do NOT invent, suggest, or mention any movie or show titles.
 - Do NOT recommend content.
 - Do NOT explain your reasoning.
-- Return ONLY a valid JSON object — no markdown, no backticks, no extra text.
+- Return ONLY a valid JSON object — no markdown, no backticks, no extra text.${familyContext}
 
 FIELD DEFINITIONS:
 - mood: the emotional tone. Must be exactly one of: "dark" | "funny" | "romantic" | "mysterious" — or null if none fits.
@@ -73,7 +78,7 @@ JSON structure:
     const responseText =
       response.output?.message?.content?.[0]?.text ?? "{}";
 
-    // Nettoyage au cas où le modèle inclurait des balises de code Markdown
+    // Strip markdown code fences if the model wraps the JSON
     const cleanedJson = responseText
       .replace(/```json/g, "")
       .replace(/```/g, "")
@@ -81,7 +86,8 @@ JSON structure:
 
     const rawData = JSON.parse(cleanedJson);
 
-    // Validation stricte du schéma avec Zod
+    // Strict schema validation — familyMode is NOT in the schema Nova Lite fills.
+    // It is injected by DiscoveryService after this call.
     return DiscoveryIntentSchema.parse(rawData);
   }
 }

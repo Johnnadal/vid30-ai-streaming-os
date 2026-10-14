@@ -32,9 +32,11 @@ export const handler = async (
 
   // Parse body
   let query: string | undefined;
+  let familyMode = false;
   try {
     const body = JSON.parse(event.body ?? "{}");
     query = body.query;
+    familyMode = typeof body.familyMode === "boolean" ? body.familyMode : false;
   } catch {
     return json(400, {
       error: "INVALID_REQUEST",
@@ -50,7 +52,10 @@ export const handler = async (
   }
 
   try {
-    const { intent, results } = await discoveryService.discover(query);
+    const { intent, results } = await discoveryService.discover({
+      query,
+      familyMode,
+    });
     return json(200, { intent, results });
   } catch (err) {
     console.error("Discovery error:", err);

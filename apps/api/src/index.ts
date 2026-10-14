@@ -12,7 +12,7 @@ const app = Fastify({
 });
 
 // Select AI provider via AI_PROVIDER env var.
-// Default: "bedrock" in production, "rule-based" for local dev without AWS.
+// Default: "bedrock". Use "rule-based" for local dev without AWS.
 function buildAIProvider(): AIProvider {
   const provider = process.env.AI_PROVIDER ?? "bedrock";
   if (provider === "rule-based") {
@@ -33,7 +33,7 @@ app.get("/health", async () => {
 });
 
 app.post<{ Body: DiscoverRequest }>("/discover", async (request, reply) => {
-  const query = request.body?.query;
+  const { query, familyMode = false } = request.body ?? {};
 
   if (!query || typeof query !== "string" || query.trim().length === 0) {
     return reply.status(400).send({
@@ -43,7 +43,10 @@ app.post<{ Body: DiscoverRequest }>("/discover", async (request, reply) => {
   }
 
   try {
-    const { intent, results } = await discoveryService.discover(query);
+    const { intent, results } = await discoveryService.discover({
+      query,
+      familyMode,
+    });
     return { intent, results };
   } catch (err) {
     app.log.error(err);

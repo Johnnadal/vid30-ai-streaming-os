@@ -11,25 +11,31 @@ export interface DiscoveryResult {
   results: CatalogItem[];
 }
 
+export interface DiscoverRequest {
+  query: string;
+  familyMode?: boolean;
+}
+
 export class DiscoveryService {
   constructor(
     private readonly aiProvider: AIProvider,
     private readonly catalogProvider: CatalogProvider,
   ) {}
 
-  async discover(
-    query: string,
-  ): Promise<DiscoveryResult> {
-    const intent =
-      await this.aiProvider.extractDiscoveryIntent(query);
+  async discover(request: DiscoverRequest): Promise<DiscoveryResult> {
+    const { query, familyMode = false } = request;
 
-    const results =
-      await this.catalogProvider.discover(intent);
-
-    return {
+    // Bedrock extracts mood, cinematic, duration, genres, keywords from the query.
+    // familyMode is injected after parsing — never extracted by the model.
+    const baseIntent = await this.aiProvider.extractDiscoveryIntent(
       query,
-      intent,
-      results,
-    };
+      { familyMode },
+    );
+
+    const intent: DiscoveryIntent = { ...baseIntent, familyMode };
+
+    const results = await this.catalogProvider.discover(intent);
+
+    return { query, intent, results };
   }
 }

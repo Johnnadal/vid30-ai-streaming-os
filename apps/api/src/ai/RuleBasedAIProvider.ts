@@ -1,4 +1,4 @@
-import type { AIProvider } from "./AIProvider";
+import type { AIProvider, AIProviderContext } from "./AIProvider";
 import {
   DiscoveryIntentSchema,
   type DiscoveryIntent,
@@ -7,6 +7,7 @@ import {
 export class RuleBasedAIProvider implements AIProvider {
   async extractDiscoveryIntent(
     query: string,
+    _context?: AIProviderContext,
   ): Promise<DiscoveryIntent> {
     const normalized = query.toLowerCase();
 
