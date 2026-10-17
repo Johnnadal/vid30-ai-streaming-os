@@ -92,9 +92,56 @@ function ResultCard({
           <span key={g} className="genre-chip">{g}</span>
         ))}
         {item.cinematic && <span className="cinematic-chip">Cinematic</span>}
+        {item.origin === 'founder' && <span className="founder-chip">🎬 Vid30 Original</span>}
       </div>
       <p className="result-description">{item.description}</p>
     </button>
+  );
+}
+
+// ── Advanced Mode modal ────────────────────────────────────────────────────
+
+function AdvancedModeModal({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay" role="dialog" aria-modal="true" aria-label="Advanced Mode">
+      <div className="modal-panel">
+        <button className="modal-close" onClick={onClose} type="button" aria-label="Close">
+          ✕
+        </button>
+        <div className="modal-header">
+          <h2 className="modal-title">Advanced Mode</h2>
+          <span className="coming-soon-badge">Coming Soon</span>
+        </div>
+        <div className="modal-content">
+          <p className="modal-description">
+            Advanced Mode will let you customize discovery with bring-your-own-key (BYOK) AI models.
+          </p>
+          <div className="modal-features">
+            <h3 className="modal-features-title">Planned Features:</h3>
+            <ul className="modal-features-list">
+              <li>Connect your own AI provider (OpenAI, Anthropic, etc.)</li>
+              <li>Fine-tune recommendation logic</li>
+              <li>Custom content filtering rules</li>
+              <li>Personalized discovery profiles</li>
+            </ul>
+          </div>
+          <p className="modal-hint">
+            We're building this now. Check back soon or contact us for early access.
+          </p>
+        </div>
+        <button className="modal-close-button" onClick={onClose} type="button">
+          Got it
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -128,6 +175,11 @@ function DetailPanel({
               👨‍👩‍👧 Family Safe
             </span>
           )}
+          {item.origin === 'founder' && (
+            <span className="founder-chip" title="Vid30 Original content">
+              🎬 Vid30 Original
+            </span>
+          )}
         </div>
         <p className="detail-description">{item.description}</p>
         <div className="detail-moods">
@@ -151,6 +203,7 @@ function DetailPanel({
 export function App() {
   const [query, setQuery] = useState('');
   const [familyMode, setFamilyMode] = useState(false);
+  const [isAdvancedModalOpen, setIsAdvancedModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<DiscoverResponse | null>(null);
@@ -193,8 +246,15 @@ export function App() {
   );
 
   const handleFamilyModeToggle = useCallback(() => {
-    setFamilyMode((prev) => !prev);
-  }, []);
+    setFamilyMode((prev) => {
+      const next = !prev;
+      // Re-run current query with updated familyMode if one exists
+      if (response) {
+        runDiscover(query, next);
+      }
+      return next;
+    });
+  }, [query, response, runDiscover]);
 
   return (
     <div className="app">
@@ -258,6 +318,19 @@ export function App() {
               >
                 <span className="toggle-knob" />
                 <span className="sr-only">{familyMode ? 'Family Mode on' : 'Family Mode off'}</span>
+              </button>
+            </div>
+
+            {/* Advanced Mode button */}
+            <div className="advanced-mode-row">
+              <button
+                className="advanced-mode-button"
+                type="button"
+                onClick={() => setIsAdvancedModalOpen(true)}
+              >
+                <span className="advanced-mode-icon">⚙️</span>
+                Advanced Mode
+                <span className="advanced-mode-badge">Coming Soon</span>
               </button>
             </div>
           </form>
@@ -336,6 +409,12 @@ export function App() {
       {selectedItem && (
         <DetailPanel item={selectedItem} onClose={() => setSelectedItem(null)} />
       )}
+
+      {/* Advanced Mode modal */}
+      <AdvancedModeModal
+        isOpen={isAdvancedModalOpen}
+        onClose={() => setIsAdvancedModalOpen(false)}
+      />
     </div>
   );
 }

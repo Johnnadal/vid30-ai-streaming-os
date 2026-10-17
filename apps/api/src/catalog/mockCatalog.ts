@@ -4,6 +4,7 @@ import type { CatalogItem } from "./CatalogProvider";
  * Demo catalog — 24 films.
  * contentRating and familySafe are demo classifications, not official certifications.
  * familySafe = true iff contentRating ∈ ["G", "PG", "PG-13"].
+ * origin = "catalog" for standard films (stored in this demo).
  */
 export const mockCatalog: CatalogItem[] = [
   // --- DARK / CINEMATIC ---
@@ -18,6 +19,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG-13",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "the-last-signal",
@@ -30,6 +32,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG-13",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "obsidian-city",
@@ -42,6 +45,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "R",
     familySafe: false,
+    origin: "catalog",
   },
   {
     id: "hollow-echo",
@@ -54,6 +58,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "R",
     familySafe: false,
+    origin: "catalog",
   },
   {
     id: "the-iron-meridian",
@@ -66,6 +71,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG-13",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "pale-embers",
@@ -78,6 +84,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "R",
     familySafe: false,
+    origin: "catalog",
   },
 
   // --- MYSTERIOUS ---
@@ -92,6 +99,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG-13",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "deep-water-station",
@@ -104,6 +112,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "R",
     familySafe: false,
+    origin: "catalog",
   },
   {
     id: "the-amber-room",
@@ -116,6 +125,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG-13",
     familySafe: true,
+    origin: "catalog",
   },
 
   // --- FUNNY / COMEDY ---
@@ -130,6 +140,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "operation-croissant",
@@ -142,6 +153,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: false,
     contentRating: "PG",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "reboot-day",
@@ -154,6 +166,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: false,
     contentRating: "PG",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "three-cats-one-job",
@@ -166,6 +179,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: false,
     contentRating: "G",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "the-understudies",
@@ -178,6 +192,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG",
     familySafe: true,
+    origin: "catalog",
   },
 
   // --- ROMANTIC ---
@@ -192,6 +207,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "the-violet-hour",
@@ -204,6 +220,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "letters-from-lisbon",
@@ -216,6 +233,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG-13",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "between-two-tides",
@@ -228,6 +246,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG",
     familySafe: true,
+    origin: "catalog",
   },
 
   // --- ACTION / THRILLER ---
@@ -242,6 +261,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG-13",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "fracture-line",
@@ -254,6 +274,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG-13",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "zero-approach",
@@ -266,6 +287,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG-13",
     familySafe: true,
+    origin: "catalog",
   },
 
   // --- SCI-FI ---
@@ -280,6 +302,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG-13",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "cascade-protocol",
@@ -292,6 +315,7 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "PG-13",
     familySafe: true,
+    origin: "catalog",
   },
   {
     id: "the-soft-machine",
@@ -304,5 +328,52 @@ export const mockCatalog: CatalogItem[] = [
     cinematic: true,
     contentRating: "R",
     familySafe: false,
+    origin: "catalog",
+  },
+
+  // --- VID30 ORIGINALS (Founder Films) — Example format ──────────────────
+  // These are fictional examples showing the expected structure for founder-created films.
+  // Videos referenced are not committed to the repo; they should be served locally during dev.
+  // Example paths:
+  //   - Local dev: file:///videos/vid30-originals/echoes-of-creation.mp4
+  //   - Dev server: http://localhost:5173/videos/vid30-originals/echoes-of-creation.mp4
+  {
+    id: "vid30-echoes-of-creation",
+    title: "Echoes of Creation",
+    description:
+      "[DEMO] A behind-the-scenes documentary about how Vid30 was imagined and built. Features interviews with the founding team exploring AI-driven discovery, the philosophy behind recommendation systems, and dreams of a better streaming future.",
+    durationMinutes: 52,
+    genres: ["documentary", "tech"],
+    mood: ["inspiring", "thoughtful"],
+    cinematic: true,
+    contentRating: "G",
+    familySafe: true,
+    origin: "founder",
+  },
+  {
+    id: "vid30-pixels-and-dreams",
+    title: "Pixels and Dreams",
+    description:
+      "[DEMO] A short film exploring the intersection of technology and storytelling. Follows a filmmaker debugging code at midnight while dreaming of audiences discovering their work through AI.",
+    durationMinutes: 19,
+    genres: ["drama", "sci-fi"],
+    mood: ["mysterious", "hopeful"],
+    cinematic: true,
+    contentRating: "PG",
+    familySafe: true,
+    origin: "founder",
+  },
+  {
+    id: "vid30-algorithms-of-wonder",
+    title: "Algorithms of Wonder",
+    description:
+      "[DEMO] An experimental essay film on how algorithms shape our understanding of beauty, relevance, and discovery in the digital age. Poetic, contemplative, and wonderfully weird.",
+    durationMinutes: 35,
+    genres: ["experimental", "art"],
+    mood: ["mysterious", "dark"],
+    cinematic: true,
+    contentRating: "PG-13",
+    familySafe: true,
+    origin: "founder",
   },
 ];

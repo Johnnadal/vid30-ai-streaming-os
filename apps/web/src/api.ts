@@ -13,6 +13,7 @@ const API_BASE_URL =
 // ── Types (mirror of apps/api — kept inline to avoid RN workspace dep) ────
 
 export type WatchingContext = 'solo' | 'couple' | 'family' | 'friends';
+export type ContentOrigin = 'catalog' | 'founder';
 
 export type DiscoveryIntent = {
   mood: string | null;
@@ -35,6 +36,7 @@ export type DiscoveryResultItem = {
   /** Demo classification — not an official certification. */
   contentRating: string;
   familySafe: boolean;
+  origin: ContentOrigin;
 };
 
 export type DiscoverResponse = {

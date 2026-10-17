@@ -5,6 +5,7 @@ import { API_BASE_URL } from '../config';
  * This is a discovery hint extracted from the query, NOT a safety signal.
  */
 export type WatchingContext = 'solo' | 'couple' | 'family' | 'friends';
+export type ContentOrigin = 'catalog' | 'founder';
 
 /**
  * Structured intent extracted from the natural-language query.
@@ -47,6 +48,10 @@ export type DiscoveryResultItem = {
    * Computed at catalog creation — never inferred by AI.
    */
   familySafe: boolean;
+  /**
+   * Content origin: "catalog" for standard films, "founder" for Vid30 Originals.
+   */
+  origin: ContentOrigin;
 };
 
 export type DiscoverResponse = {

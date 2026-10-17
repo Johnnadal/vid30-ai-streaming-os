@@ -22,6 +22,7 @@ import {
   discoverContent,
   type DiscoveryResultItem,
   type DiscoveryIntent,
+  type ContentOrigin,
 } from '../data/discoverService';
 import { scaledPixels } from '../hooks/useScale';
 import { colors } from '../theme/colors';
@@ -102,6 +103,7 @@ export default function ExploreScreen() {
 
   const [query, setQuery] = useState('');
   const [familyMode, setFamilyMode] = useState(false);
+  const [isAdvancedModalOpen, setIsAdvancedModalOpen] = useState(false);
   const [results, setResults] = useState<DiscoveryResultItem[]>([]);
   const [intent, setIntent] = useState<DiscoveryIntent | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -263,6 +265,24 @@ export default function ExploreScreen() {
           )}
         </SpatialNavigationFocusableView>
 
+        {/* Advanced Mode button (Coming Soon) */}
+        <SpatialNavigationFocusableView
+          onSelect={() => setIsAdvancedModalOpen(true)}
+          onFocus={() => setFocusedIndex(2)}
+        >
+          {({ isFocused: advancedFocused }) => (
+            <View
+              style={[
+                styles.advancedModeButton,
+                advancedFocused && styles.advancedModeButtonFocused,
+              ]}
+            >
+              <Text style={styles.advancedModeText}>⚙️  Advanced Mode</Text>
+              <Text style={styles.comingSoonBadge}>Coming Soon</Text>
+            </View>
+          )}
+        </SpatialNavigationFocusableView>
+
         {/* Suggestion chips */}
         <View style={styles.suggestionsRow}>
           {SUGGESTIONS.map((suggestion, index) => (
@@ -351,6 +371,7 @@ export default function ExploreScreen() {
                         : ''}
                       {item.cinematic ? '  ·  Cinematic' : ''}
                       {item.familySafe ? '  ·  ✓ Family Safe' : ''}
+                      {item.origin === 'founder' ? '  ·  🎬 Vid30 Original' : ''}
                     </Text>
                     <Text style={styles.resultDescription} numberOfLines={2}>
                       {item.description}
@@ -377,6 +398,51 @@ export default function ExploreScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* Advanced Mode modal (Coming Soon) */}
+      {isAdvancedModalOpen && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalPanel}>
+            <Text style={styles.modalTitle}>Advanced Mode</Text>
+            <Text style={styles.modalBadge}>Coming Soon</Text>
+            
+            <Text style={styles.modalDescription}>
+              Advanced Mode will let you customize discovery with bring-your-own-key (BYOK) AI models.
+            </Text>
+            
+            <View style={styles.modalFeatures}>
+              <Text style={styles.modalFeaturesTitle}>Planned Features:</Text>
+              <Text style={styles.modalFeatureItem}>• Connect your own AI provider</Text>
+              <Text style={styles.modalFeatureItem}>• Fine-tune recommendation logic</Text>
+              <Text style={styles.modalFeatureItem}>• Custom content filtering rules</Text>
+              <Text style={styles.modalFeatureItem}>• Personalized discovery profiles</Text>
+            </View>
+            
+            <Text style={styles.modalHint}>
+              We're building this now. Check back soon or contact us for early access.
+            </Text>
+            
+            <View style={styles.modalButtonRow}>
+              <View style={{ flex: 1 }} />
+              <SpatialNavigationFocusableView
+                onSelect={() => setIsAdvancedModalOpen(false)}
+                onFocus={() => setFocusedIndex(9999)}
+              >
+                {({ isFocused: btnFocused }) => (
+                  <View
+                    style={[
+                      styles.modalCloseButton,
+                      btnFocused && styles.modalCloseButtonFocused,
+                    ]}
+                  >
+                    <Text style={styles.modalCloseButtonText}>Got It</Text>
+                  </View>
+                )}
+              </SpatialNavigationFocusableView>
+            </View>
+          </View>
+        </View>
+      )}
     </SpatialNavigationRoot>
   );
 }
@@ -592,5 +658,121 @@ const styles = StyleSheet.create({
     color: colors.textTertiary,
     marginTop: scaledPixels(8),
     fontStyle: 'italic',
+  },
+
+  // ── Advanced Mode button ──────────────────────────────────────────────
+  advancedModeButton: {
+    backgroundColor: colors.card,
+    borderRadius: scaledPixels(8),
+    borderWidth: scaledPixels(2),
+    borderColor: colors.border,
+    paddingHorizontal: scaledPixels(24),
+    paddingVertical: scaledPixels(12),
+    marginBottom: scaledPixels(24),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  advancedModeButtonFocused: {
+    backgroundColor: colors.cardElevated,
+    borderColor: colors.focusBorder,
+    transform: [{ scale: 1.02 }],
+  },
+  advancedModeText: {
+    fontSize: scaledPixels(24),
+    fontWeight: '600',
+    color: colors.textSecondary,
+  },
+  comingSoonBadge: {
+    backgroundColor: colors.cardElevated,
+    color: colors.primary,
+    fontSize: scaledPixels(16),
+    fontWeight: '700',
+    paddingHorizontal: scaledPixels(12),
+    paddingVertical: scaledPixels(4),
+    borderRadius: scaledPixels(4),
+  },
+
+  // ── Advanced Mode modal ───────────────────────────────────────────────
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 101,
+  },
+  modalPanel: {
+    backgroundColor: colors.card,
+    borderRadius: scaledPixels(12),
+    borderWidth: scaledPixels(1),
+    borderColor: colors.border,
+    padding: scaledPixels(32),
+    maxWidth: scaledPixels(600),
+    width: '90%',
+    gap: scaledPixels(16),
+  },
+  modalTitle: {
+    fontSize: scaledPixels(36),
+    fontWeight: '700',
+    color: colors.text,
+  },
+  modalBadge: {
+    fontSize: scaledPixels(16),
+    fontWeight: '700',
+    color: colors.primary,
+    letterSpacing: 0.05,
+  },
+  modalDescription: {
+    fontSize: scaledPixels(24),
+    color: colors.textSecondary,
+    lineHeight: scaledPixels(36),
+  },
+  modalFeatures: {
+    backgroundColor: colors.background,
+    borderRadius: scaledPixels(8),
+    padding: scaledPixels(16),
+    gap: scaledPixels(8),
+  },
+  modalFeaturesTitle: {
+    fontSize: scaledPixels(22),
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: scaledPixels(8),
+  },
+  modalFeatureItem: {
+    fontSize: scaledPixels(20),
+    color: colors.textSecondary,
+    lineHeight: scaledPixels(32),
+  },
+  modalHint: {
+    fontSize: scaledPixels(20),
+    color: colors.textTertiary,
+    fontStyle: 'italic',
+    lineHeight: scaledPixels(32),
+  },
+  modalButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: scaledPixels(12),
+    marginTop: scaledPixels(12),
+  },
+  modalCloseButton: {
+    backgroundColor: colors.primary,
+    borderRadius: scaledPixels(8),
+    paddingHorizontal: scaledPixels(32),
+    paddingVertical: scaledPixels(12),
+  },
+  modalCloseButtonFocused: {
+    backgroundColor: colors.success,
+    transform: [{ scale: 1.05 }],
+  },
+  modalCloseButtonText: {
+    fontSize: scaledPixels(24),
+    fontWeight: '700',
+    color: colors.textOnPrimary,
   },
 });
