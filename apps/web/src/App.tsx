@@ -249,8 +249,8 @@ export function App() {
     setFamilyMode((prev) => {
       const next = !prev;
       // Re-run current query with updated familyMode if one exists
-      if (response) {
-        runDiscover(query, next);
+      if (response && query.trim()) {
+        runDiscover(query.trim(), next);
       }
       return next;
     });

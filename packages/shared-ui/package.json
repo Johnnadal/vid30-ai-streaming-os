@@ -15,8 +15,12 @@
     "react": "*",
     "react-native": "*"
   },
+  "dependencies": {
+    "mitt": "^3.0.1"
+  },
   "devDependencies": {
     "@types/react": "~19.1.0",
+    "react-native": "*",
     "typescript": "~5.7.0"
   }
 }
