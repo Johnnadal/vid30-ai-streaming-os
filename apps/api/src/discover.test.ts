@@ -431,6 +431,45 @@ describe("Family Mode — horror films excluded when enabled", () => {
 
 // ── SPRINT 3 — Founder Films (Vid30 Originals) integration ──────────────
 
+// ── SPRINT 3 — EXACT USER SCENARIO: "dark and cinematic under 90 minutes" ──
+
+describe("User scenario: 'Something dark and cinematic under 90 minutes'", () => {
+  it("WITHOUT family mode: returns multiple films including horror", async () => {
+    const result = await service.discover({
+      query: "Something dark and cinematic under 90 minutes",
+      familyMode: false,
+    });
+    console.log(`\n=== WITHOUT Family Mode ===`);
+    console.log(`Total results: ${result.results.length}`);
+    console.log("Films:");
+    result.results.forEach(r => {
+      console.log(`  - ${r.title} (${r.durationMinutes}min, ${r.contentRating}, horror=${r.genres.includes('horror')}, familySafe=${r.familySafe})`);
+    });
+    expect(result.results.length).toBeGreaterThan(0);
+  });
+
+  it("WITH family mode: returns only familySafe films, NO horror", async () => {
+    const result = await service.discover({
+      query: "Something dark and cinematic under 90 minutes",
+      familyMode: true,
+    });
+    console.log(`\n=== WITH Family Mode ===`);
+    console.log(`Total results: ${result.results.length}`);
+    console.log("Films:");
+    result.results.forEach(r => {
+      console.log(`  - ${r.title} (${r.durationMinutes}min, ${r.contentRating}, horror=${r.genres.includes('horror')}, familySafe=${r.familySafe})`);
+    });
+    
+    // Key assertions
+    expect(result.intent.familyMode).toBe(true);
+    for (const item of result.results) {
+      expect(item.familySafe).toBe(true);
+      expect(item.genres).not.toContain("horror");
+      expect(item.durationMinutes).toBeLessThanOrEqual(90);
+    }
+  });
+});
+
 describe("Founder Films — Vid30 Originals catalog", () => {
   it("all catalog items have origin field (catalog or founder)", async () => {
     const result = await service.discover({

@@ -7,6 +7,14 @@ import { API_BASE_URL } from '../config';
 export type WatchingContext = 'solo' | 'couple' | 'family' | 'friends';
 export type ContentOrigin = 'catalog' | 'founder';
 
+export type ContentGuidelines = {
+  minAge: number;
+  violence: boolean;
+  language: boolean;
+  sexuality: boolean;
+  scary: boolean;
+};
+
 /**
  * Structured intent extracted from the natural-language query.
  * Mirrors apps/api/src/ai/types.ts — DiscoveryIntent.
@@ -48,6 +56,15 @@ export type DiscoveryResultItem = {
    * Computed at catalog creation — never inferred by AI.
    */
   familySafe: boolean;
+  /**
+   * Content origin: "catalog" for standard films, "founder" for Vid30 Originals.
+   */
+  origin: ContentOrigin;
+  /**
+   * Detailed content guidelines for granular filtering.
+   */
+  guidelines: ContentGuidelines;
+};
   /**
    * Content origin: "catalog" for standard films, "founder" for Vid30 Originals.
    */

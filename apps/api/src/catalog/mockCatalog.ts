@@ -1,13 +1,14 @@
 import type { CatalogItem } from "./CatalogProvider";
 
 /**
- * Demo catalog — 24 films.
+ * Demo catalog — 27 films with detailed content guidelines.
  * contentRating and familySafe are demo classifications, not official certifications.
  * familySafe = true iff contentRating ∈ ["G", "PG", "PG-13"].
- * origin = "catalog" for standard films (stored in this demo).
+ * guidelines = detailed content warnings for granular parental controls (minAge, violence, language, sexuality, scary).
+ * origin = "catalog" for standard films, "founder" for Vid30 Originals.
  */
 export const mockCatalog: CatalogItem[] = [
-  // --- DARK / CINEMATIC ---
+  // --- DARK / CINEMATIC (PG-13 / Family-Safe) ---
   {
     id: "neon-rain",
     title: "Neon Rain",
@@ -20,6 +21,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 13,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "the-last-signal",
@@ -33,6 +41,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 13,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "obsidian-city",
@@ -46,6 +61,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "R",
     familySafe: false,
     origin: "catalog",
+    guidelines: {
+      minAge: 17,
+      violence: true,
+      language: true,
+      sexuality: true,
+      scary: true,
+    },
   },
   {
     id: "hollow-echo",
@@ -59,6 +81,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "R",
     familySafe: false,
     origin: "catalog",
+    guidelines: {
+      minAge: 17,
+      violence: true,
+      language: false,
+      sexuality: false,
+      scary: true,
+    },
   },
   {
     id: "the-iron-meridian",
@@ -72,6 +101,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 13,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "pale-embers",
@@ -85,9 +121,16 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "R",
     familySafe: false,
     origin: "catalog",
+    guidelines: {
+      minAge: 17,
+      violence: true,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
 
-  // --- MYSTERIOUS ---
+  // --- MYSTERIOUS (PG-13 / Family-Safe) ---
   {
     id: "the-cartographer",
     title: "The Cartographer",
@@ -100,6 +143,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 13,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "deep-water-station",
@@ -113,6 +163,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "R",
     familySafe: false,
     origin: "catalog",
+    guidelines: {
+      minAge: 17,
+      violence: true,
+      language: false,
+      sexuality: false,
+      scary: true,
+    },
   },
   {
     id: "the-amber-room",
@@ -126,9 +183,16 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 13,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
 
-  // --- FUNNY / COMEDY ---
+  // --- FUNNY / COMEDY (G-PG / Family-Safe) ---
   {
     id: "laughing-stars",
     title: "Laughing Stars",
@@ -141,6 +205,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 0,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "operation-croissant",
@@ -154,6 +225,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 6,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "reboot-day",
@@ -167,6 +245,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 0,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "three-cats-one-job",
@@ -180,6 +265,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "G",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 0,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "the-understudies",
@@ -193,9 +285,16 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 0,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
 
-  // --- ROMANTIC ---
+  // --- ROMANTIC (PG / Family-Safe) ---
   {
     id: "summer-light",
     title: "Summer Light",
@@ -208,6 +307,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 6,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "the-violet-hour",
@@ -221,6 +327,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 6,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "letters-from-lisbon",
@@ -234,6 +347,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 13,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "between-two-tides",
@@ -247,9 +367,16 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 6,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
 
-  // --- ACTION / THRILLER ---
+  // --- ACTION / THRILLER (PG-13 / Family-Safe) ---
   {
     id: "red-frequency",
     title: "Red Frequency",
@@ -262,6 +389,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 13,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "fracture-line",
@@ -275,6 +409,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 13,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "zero-approach",
@@ -288,9 +429,16 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 13,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
 
-  // --- SCI-FI ---
+  // --- SCI-FI (PG-13 / Family-Safe or R / Not Safe) ---
   {
     id: "borrowed-orbit",
     title: "Borrowed Orbit",
@@ -303,6 +451,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 13,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "cascade-protocol",
@@ -316,6 +471,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "catalog",
+    guidelines: {
+      minAge: 13,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "the-soft-machine",
@@ -329,14 +491,16 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "R",
     familySafe: false,
     origin: "catalog",
+    guidelines: {
+      minAge: 17,
+      violence: true,
+      language: true,
+      sexuality: true,
+      scary: false,
+    },
   },
 
-  // --- VID30 ORIGINALS (Founder Films) — Example format ──────────────────
-  // These are fictional examples showing the expected structure for founder-created films.
-  // Videos referenced are not committed to the repo; they should be served locally during dev.
-  // Example paths:
-  //   - Local dev: file:///videos/vid30-originals/echoes-of-creation.mp4
-  //   - Dev server: http://localhost:5173/videos/vid30-originals/echoes-of-creation.mp4
+  // --- VID30 ORIGINALS (Founder Films — Example format) ────────────────────
   {
     id: "vid30-echoes-of-creation",
     title: "Echoes of Creation",
@@ -349,6 +513,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "G",
     familySafe: true,
     origin: "founder",
+    guidelines: {
+      minAge: 0,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "vid30-pixels-and-dreams",
@@ -362,6 +533,13 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "founder",
+    guidelines: {
+      minAge: 6,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
   {
     id: "vid30-algorithms-of-wonder",
@@ -375,5 +553,12 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "founder",
+    guidelines: {
+      minAge: 13,
+      violence: false,
+      language: false,
+      sexuality: false,
+      scary: false,
+    },
   },
 ];

@@ -15,6 +15,14 @@ const API_BASE_URL =
 export type WatchingContext = 'solo' | 'couple' | 'family' | 'friends';
 export type ContentOrigin = 'catalog' | 'founder';
 
+export type ContentGuidelines = {
+  minAge: number;
+  violence: boolean;
+  language: boolean;
+  sexuality: boolean;
+  scary: boolean;
+};
+
 export type DiscoveryIntent = {
   mood: string | null;
   cinematic: boolean;
@@ -37,6 +45,7 @@ export type DiscoveryResultItem = {
   contentRating: string;
   familySafe: boolean;
   origin: ContentOrigin;
+  guidelines: ContentGuidelines;
 };
 
 export type DiscoverResponse = {

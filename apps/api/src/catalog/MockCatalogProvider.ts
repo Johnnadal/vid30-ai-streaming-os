@@ -36,12 +36,24 @@ export class MockCatalogProvider implements CatalogProvider {
       );
     }
 
-    // 2. Family Mode — exclude items that are not familySafe.
-    //    A film with familySafe !== true cannot be verified as safe,
-    //    so it is excluded by default when familyMode is active.
-    //    This is a deterministic metadata rule, not an AI decision.
+    // 2. Family Mode — exclude items that are not familySafe OR have inappropriate content.
+    //    Use both familySafe flag AND detailed guidelines for robust filtering.
+    //    Default family mode: minAge <= 13, no violence/scary/strong language/sexual content.
     if (intent.familyMode) {
-      items = items.filter((item) => item.familySafe === true);
+      items = items.filter((item) => {
+        // Primary check: familySafe flag
+        if (!item.familySafe) return false;
+        
+        // Secondary check: detailed guidelines
+        const g = item.guidelines;
+        if (g.minAge > 13) return false;
+        if (g.violence) return false;
+        if (g.scary) return false;
+        if (g.language) return false;
+        if (g.sexuality) return false;
+        
+        return true;
+      });
     }
 
     // ── SCORING (on remaining items after strict filters) ──────────────────
