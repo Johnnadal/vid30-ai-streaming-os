@@ -18,8 +18,11 @@ function PlayerScreen({
     return (
       <div className="player-screen">
         <div className="player-error">
-          <p>Video not available</p>
-          <button onClick={onBack} className="back-button">← Back</button>
+          {item.heroUrl && (
+            <img src={item.heroUrl} alt={item.title} className="player-error-poster" />
+          )}
+          <p>Video not available for this title yet.</p>
+          <button onClick={onBack} className="back-button">← Back to results</button>
         </div>
       </div>
     );
@@ -38,6 +41,7 @@ function PlayerScreen({
           controls
           autoPlay
           onEnded={onBack}
+          poster={item.heroUrl}
         />
       </div>
       <div className="player-info">
@@ -115,6 +119,44 @@ function RatingBadge({ rating }: { rating: string }) {
   );
 }
 
+// ── Film thumbnail ─────────────────────────────────────────────────────────
+
+function FilmThumbnail({
+  item,
+  className = 'card-thumb',
+}: {
+  item: DiscoveryResultItem;
+  className?: string;
+}) {
+  const [imgError, setImgError] = useState(false);
+
+  if (!item.imageUrl || imgError) {
+    // Fallback: gradient based on origin
+    return (
+      <div
+        className={`${className} card-thumb-fallback`}
+        aria-hidden="true"
+      >
+        {item.origin === 'founder' ? (
+          <span className="card-thumb-icon">🎬</span>
+        ) : (
+          <span className="card-thumb-icon">🎥</span>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={item.imageUrl}
+      alt={item.title}
+      className={`${className} card-thumb-img`}
+      onError={() => setImgError(true)}
+      loading="lazy"
+    />
+  );
+}
+
 // ── Result card ────────────────────────────────────────────────────────────
 
 function ResultCard({
@@ -126,20 +168,26 @@ function ResultCard({
 }) {
   return (
     <button className="result-card" onClick={() => onClick(item)} type="button">
-      <div className="result-card-header">
-        <h3 className="result-title">{item.title}</h3>
-        <RatingBadge rating={item.contentRating} />
+      {/* Thumbnail — only for founder films with images */}
+      {item.origin === 'founder' && (
+        <FilmThumbnail item={item} className="card-thumb" />
+      )}
+      <div className="result-card-body">
+        <div className="result-card-header">
+          <h3 className="result-title">{item.title}</h3>
+          <RatingBadge rating={item.contentRating} />
+        </div>
+        <div className="result-meta">
+          <span>{item.durationMinutes} min</span>
+          {item.genres.length > 0 && <span>·</span>}
+          {item.genres.map((g) => (
+            <span key={g} className="genre-chip">{g}</span>
+          ))}
+          {item.cinematic && <span className="cinematic-chip">Cinematic</span>}
+          {item.origin === 'founder' && <span className="founder-chip">🎬 Vid30 Original</span>}
+        </div>
+        <p className="result-description">{item.description}</p>
       </div>
-      <div className="result-meta">
-        <span>{item.durationMinutes} min</span>
-        {item.genres.length > 0 && <span>·</span>}
-        {item.genres.map((g) => (
-          <span key={g} className="genre-chip">{g}</span>
-        ))}
-        {item.cinematic && <span className="cinematic-chip">Cinematic</span>}
-        {item.origin === 'founder' && <span className="founder-chip">🎬 Vid30 Original</span>}
-      </div>
-      <p className="result-description">{item.description}</p>
     </button>
   );
 }
@@ -192,6 +240,30 @@ function AdvancedModeModal({
 
 // ── Detail panel ───────────────────────────────────────────────────────────
 
+function DetailHero({ item }: { item: DiscoveryResultItem }) {
+  const [imgError, setImgError] = useState(false);
+
+  if (!item.heroUrl || imgError) {
+    return (
+      <div className="detail-hero-fallback" aria-hidden="true">
+        <span className="detail-hero-icon">{item.origin === 'founder' ? '🎬' : '🎥'}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="detail-hero-wrap">
+      <img
+        src={item.heroUrl}
+        alt={`${item.title} — hero`}
+        className="detail-hero-img"
+        onError={() => setImgError(true)}
+      />
+      <div className="detail-hero-gradient" aria-hidden="true" />
+    </div>
+  );
+}
+
 function DetailPanel({
   item,
   onClose,
@@ -207,47 +279,53 @@ function DetailPanel({
         <button className="detail-close" onClick={onClose} type="button" aria-label="Close">
           ✕
         </button>
-        <div className="detail-header">
-          <h2 className="detail-title">{item.title}</h2>
-          <RatingBadge rating={item.contentRating} />
-        </div>
-        <div className="detail-meta">
-          <span>{item.durationMinutes} min</span>
-          {item.genres.map((g) => (
-            <span key={g} className="genre-chip">{g}</span>
-          ))}
-          {item.cinematic && <span className="cinematic-chip">Cinematic</span>}
-          {item.familySafe && (
-            <span className="family-chip" title="Family Safe content">
-              👨‍👩‍👧 Family Safe
-            </span>
+
+        {/* Hero image (only for founder films with heroUrl) */}
+        {item.origin === 'founder' && <DetailHero item={item} />}
+
+        <div className="detail-content">
+          <div className="detail-header">
+            <h2 className="detail-title">{item.title}</h2>
+            <RatingBadge rating={item.contentRating} />
+          </div>
+          <div className="detail-meta">
+            <span>{item.durationMinutes} min</span>
+            {item.genres.map((g) => (
+              <span key={g} className="genre-chip">{g}</span>
+            ))}
+            {item.cinematic && <span className="cinematic-chip">Cinematic</span>}
+            {item.familySafe && (
+              <span className="family-chip" title="Family Safe content">
+                👨‍👩‍👧 Family Safe
+              </span>
+            )}
+            {item.origin === 'founder' && (
+              <span className="founder-chip" title="Vid30 Original content">
+                🎬 Vid30 Original
+              </span>
+            )}
+          </div>
+          <p className="detail-description">{item.description}</p>
+          <div className="detail-moods">
+            {item.mood.map((m) => (
+              <span key={m} className="mood-chip">{m}</span>
+            ))}
+          </div>
+
+          {/* Play button for Vid30 Originals with videoUrl */}
+          {item.origin === 'founder' && item.videoUrl && (
+            <button className="play-button" onClick={() => onPlay(item)} type="button">
+              ▶ Play
+            </button>
           )}
-          {item.origin === 'founder' && (
-            <span className="founder-chip" title="Vid30 Original content">
-              🎬 Vid30 Original
-            </span>
-          )}
+
+          <p className="detail-disclaimer">
+            Content rating is a demo classification and does not represent an official certification.
+            {item.familySafe
+              ? ' Family Safe status is based on contentRating metadata, not AI judgment.'
+              : ''}
+          </p>
         </div>
-        <p className="detail-description">{item.description}</p>
-        <div className="detail-moods">
-          {item.mood.map((m) => (
-            <span key={m} className="mood-chip">{m}</span>
-          ))}
-        </div>
-        
-        {/* Play button for Vid30 Originals */}
-        {item.origin === 'founder' && item.videoUrl && (
-          <button className="play-button" onClick={() => onPlay(item)} type="button">
-            ▶ Play
-          </button>
-        )}
-        
-        <p className="detail-disclaimer">
-          Content rating is a demo classification and does not represent an official certification.
-          {item.familySafe
-            ? ' Family Safe status is based on contentRating metadata, not AI judgment.'
-            : ''}
-        </p>
       </div>
     </div>
   );
@@ -304,7 +382,6 @@ export function App() {
   const handleFamilyModeToggle = useCallback(() => {
     setFamilyMode((prev) => {
       const next = !prev;
-      // Re-run current query with updated familyMode if one exists
       if (response && query.trim()) {
         runDiscover(query.trim(), next);
       }
@@ -426,7 +503,6 @@ export function App() {
         {/* Results */}
         {!isLoading && response && (
           <section className="results-section" aria-label="Discovery results">
-            {/* Intent panel */}
             <IntentPanel intent={response.intent} />
 
             {response.results.length === 0 ? (

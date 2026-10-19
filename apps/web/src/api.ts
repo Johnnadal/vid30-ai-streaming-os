@@ -48,6 +48,10 @@ export type DiscoveryResultItem = {
   guidelines: ContentGuidelines;
   /** Video URL for playable content (founder films only) */
   videoUrl?: string;
+  /** Thumbnail image URL 600×338 (founder films only) */
+  imageUrl?: string;
+  /** Hero/banner image URL 1920×1080 (founder films only) */
+  heroUrl?: string;
 };
 
 export type DiscoverResponse = {

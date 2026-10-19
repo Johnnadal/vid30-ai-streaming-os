@@ -621,6 +621,8 @@ export const mockCatalog: CatalogItem[] = [
     familySafe: true,
     origin: "founder",
     videoUrl: "/videos/vid30-ai-directors-commercial.mp4",
+    imageUrl: "/images/film1.jpg",
+    heroUrl: "/images/film1-hero.jpg",
     guidelines: {
       minAge: 0,
       violence: false,
@@ -642,6 +644,8 @@ export const mockCatalog: CatalogItem[] = [
     familySafe: true,
     origin: "founder",
     videoUrl: "/videos/vid30-adidas-creative.mp4",
+    imageUrl: "/images/film2.jpg",
+    heroUrl: "/images/film2-hero.jpg",
     guidelines: {
       minAge: 0,
       violence: false,
@@ -663,6 +667,8 @@ export const mockCatalog: CatalogItem[] = [
     familySafe: true,
     origin: "founder",
     videoUrl: "/videos/vid30-creative-visual-storytelling.mp4",
+    imageUrl: "/images/film3.jpg",
+    heroUrl: "/images/film3-hero.jpg",
     guidelines: {
       minAge: 6,
       violence: false,
@@ -684,6 +690,8 @@ export const mockCatalog: CatalogItem[] = [
     familySafe: true,
     origin: "founder",
     videoUrl: "/videos/vid30-les-annees-retrouvees.mp4",
+    imageUrl: "/images/film4.jpg",
+    heroUrl: "/images/film4-hero.jpg",
     guidelines: {
       minAge: 6,
       violence: false,
@@ -705,6 +713,8 @@ export const mockCatalog: CatalogItem[] = [
     familySafe: true,
     origin: "founder",
     videoUrl: "/videos/vid30-histoire-patrimoine.mp4",
+    imageUrl: "/images/film5.jpg",
+    heroUrl: "/images/film5-hero.jpg",
     guidelines: {
       minAge: 13,
       violence: true,
@@ -726,6 +736,8 @@ export const mockCatalog: CatalogItem[] = [
     familySafe: true,
     origin: "founder",
     videoUrl: "/videos/vid30-animation-short.mp4",
+    imageUrl: "/images/film6.jpg",
+    heroUrl: "/images/film6-hero.jpg",
     guidelines: {
       minAge: 0,
       violence: false,
@@ -747,6 +759,8 @@ export const mockCatalog: CatalogItem[] = [
     familySafe: true,
     origin: "founder",
     videoUrl: "/videos/vid30-arriere-grand-mere.mp4",
+    imageUrl: "/images/film7.jpg",
+    heroUrl: "/images/film7-hero.jpg",
     guidelines: {
       minAge: 6,
       violence: false,
@@ -768,6 +782,8 @@ export const mockCatalog: CatalogItem[] = [
     familySafe: true,
     origin: "founder",
     videoUrl: "/videos/vid30-photojournalism-tribute.mp4",
+    imageUrl: "/images/film8.jpg",
+    heroUrl: "/images/film8-hero.jpg",
     guidelines: {
       minAge: 13,
       violence: true,
@@ -789,6 +805,8 @@ export const mockCatalog: CatalogItem[] = [
     familySafe: true,
     origin: "founder",
     videoUrl: "/videos/vid30-archives-paris-1900.mp4",
+    imageUrl: "/images/film9.jpg",
+    heroUrl: "/images/film9-hero.jpg",
     guidelines: {
       minAge: 0,
       violence: false,

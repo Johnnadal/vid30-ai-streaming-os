@@ -38,6 +38,10 @@ export interface CatalogItem {
   guidelines: ContentGuidelines;
   /** Optional video URL or stream path (MP4, HLS, etc.). For founder content only. */
   videoUrl?: string;
+  /** Thumbnail image URL (600×338). For founder content only. */
+  imageUrl?: string;
+  /** Hero/banner image URL (1920×1080). For founder content only. */
+  heroUrl?: string;
 }
 
 export interface CatalogProvider {
