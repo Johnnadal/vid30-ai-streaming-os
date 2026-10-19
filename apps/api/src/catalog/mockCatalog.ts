@@ -505,7 +505,7 @@ export const mockCatalog: CatalogItem[] = [
     id: "vid30-echoes-of-creation",
     title: "Echoes of Creation",
     description:
-      "[DEMO] A behind-the-scenes documentary about how Vid30 was imagined and built. Features interviews with the founding team exploring AI-driven discovery, the philosophy behind recommendation systems, and dreams of a better streaming future.",
+      "A behind-the-scenes documentary about how Vid30 was imagined and built. Features interviews with the founding team exploring AI-driven discovery, the philosophy behind recommendation systems, and dreams of a better streaming future.",
     durationMinutes: 52,
     genres: ["documentary", "tech"],
     mood: ["inspiring", "thoughtful"],
@@ -513,6 +513,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "G",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-echoes-of-creation.mp4",
     guidelines: {
       minAge: 0,
       violence: false,
@@ -525,7 +526,7 @@ export const mockCatalog: CatalogItem[] = [
     id: "vid30-pixels-and-dreams",
     title: "Pixels and Dreams",
     description:
-      "[DEMO] A short film exploring the intersection of technology and storytelling. Follows a filmmaker debugging code at midnight while dreaming of audiences discovering their work through AI.",
+      "A short film exploring the intersection of technology and storytelling. Follows a filmmaker debugging code at midnight while dreaming of audiences discovering their work through AI.",
     durationMinutes: 19,
     genres: ["drama", "sci-fi"],
     mood: ["mysterious", "hopeful"],
@@ -533,6 +534,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-pixels-and-dreams.mp4",
     guidelines: {
       minAge: 6,
       violence: false,
@@ -545,7 +547,7 @@ export const mockCatalog: CatalogItem[] = [
     id: "vid30-algorithms-of-wonder",
     title: "Algorithms of Wonder",
     description:
-      "[DEMO] An experimental essay film on how algorithms shape our understanding of beauty, relevance, and discovery in the digital age. Poetic, contemplative, and wonderfully weird.",
+      "An experimental essay film on how algorithms shape our understanding of beauty, relevance, and discovery in the digital age. Poetic, contemplative, and wonderfully weird.",
     durationMinutes: 35,
     genres: ["experimental", "art"],
     mood: ["mysterious", "dark"],
@@ -553,6 +555,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-algorithms-of-wonder.mp4",
     guidelines: {
       minAge: 13,
       violence: false,
@@ -565,7 +568,7 @@ export const mockCatalog: CatalogItem[] = [
     id: "vid30-signal-lost",
     title: "Signal Lost",
     description:
-      "[DEMO] A cinematic short thriller about a radio operator who receives a distress call from a location that doesn't exist. Tension, mystery, and haunting sound design.",
+      "A cinematic short thriller about a radio operator who receives a distress call from a location that doesn't exist. Tension, mystery, and haunting sound design.",
     durationMinutes: 28,
     genres: ["thriller", "drama"],
     mood: ["dark", "mysterious"],
@@ -573,6 +576,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-signal-lost.mp4",
     guidelines: {
       minAge: 13,
       violence: false,
@@ -585,7 +589,7 @@ export const mockCatalog: CatalogItem[] = [
     id: "vid30-neon-gardens",
     title: "Neon Gardens",
     description:
-      "[DEMO] A visually stunning sci-fi short set in a bioluminescent garden where memory blooms grow. Love, loss, and the price of remembering.",
+      "A visually stunning sci-fi short set in a bioluminescent garden where memory blooms grow. Love, loss, and the price of remembering.",
     durationMinutes: 41,
     genres: ["sci-fi", "romance"],
     mood: ["romantic", "dark", "mysterious"],
@@ -593,6 +597,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-neon-gardens.mp4",
     guidelines: {
       minAge: 6,
       violence: false,
@@ -615,6 +620,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "G",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-ai-directors-commercial.mp4",
     guidelines: {
       minAge: 0,
       violence: false,
@@ -635,6 +641,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "G",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-adidas-creative.mp4",
     guidelines: {
       minAge: 0,
       violence: false,
@@ -655,6 +662,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-creative-visual-storytelling.mp4",
     guidelines: {
       minAge: 6,
       violence: false,
@@ -675,6 +683,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-les-annees-retrouvees.mp4",
     guidelines: {
       minAge: 6,
       violence: false,
@@ -695,6 +704,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-histoire-patrimoine.mp4",
     guidelines: {
       minAge: 13,
       violence: true,
@@ -715,6 +725,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "G",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-animation-short.mp4",
     guidelines: {
       minAge: 0,
       violence: false,
@@ -735,6 +746,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-arriere-grand-mere.mp4",
     guidelines: {
       minAge: 6,
       violence: false,
@@ -755,6 +767,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "PG-13",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-photojournalism-tribute.mp4",
     guidelines: {
       minAge: 13,
       violence: true,
@@ -775,6 +788,7 @@ export const mockCatalog: CatalogItem[] = [
     contentRating: "G",
     familySafe: true,
     origin: "founder",
+    videoUrl: "/videos/vid30-archives-paris-1900.mp4",
     guidelines: {
       minAge: 0,
       violence: false,

@@ -46,6 +46,8 @@ export type DiscoveryResultItem = {
   familySafe: boolean;
   origin: ContentOrigin;
   guidelines: ContentGuidelines;
+  /** Video URL for playable content (founder films only) */
+  videoUrl?: string;
 };
 
 export type DiscoverResponse = {

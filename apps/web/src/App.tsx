@@ -3,6 +3,51 @@ import type { DiscoveryResultItem, DiscoveryIntent, DiscoverResponse } from './a
 import { discoverContent } from './api';
 import './styles.css';
 
+// ── Player Screen ───────────────────────────────────────────────────────────
+
+function PlayerScreen({
+  item,
+  onBack,
+}: {
+  item: DiscoveryResultItem;
+  onBack: () => void;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  if (!item.videoUrl) {
+    return (
+      <div className="player-screen">
+        <div className="player-error">
+          <p>Video not available</p>
+          <button onClick={onBack} className="back-button">← Back</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="player-screen">
+      <button className="player-close" onClick={onBack} title="Close player">
+        ✕
+      </button>
+      <div className="player-container">
+        <video
+          ref={videoRef}
+          src={item.videoUrl}
+          className="player-video"
+          controls
+          autoPlay
+          onEnded={onBack}
+        />
+      </div>
+      <div className="player-info">
+        <h2>{item.title}</h2>
+        <p>{item.description}</p>
+      </div>
+    </div>
+  );
+}
+
 // ── Suggestion chips ───────────────────────────────────────────────────────
 
 const SUGGESTIONS = [
@@ -150,9 +195,11 @@ function AdvancedModeModal({
 function DetailPanel({
   item,
   onClose,
+  onPlay,
 }: {
   item: DiscoveryResultItem;
   onClose: () => void;
+  onPlay: (item: DiscoveryResultItem) => void;
 }) {
   return (
     <div className="detail-overlay" role="dialog" aria-modal="true" aria-label={item.title}>
@@ -187,6 +234,14 @@ function DetailPanel({
             <span key={m} className="mood-chip">{m}</span>
           ))}
         </div>
+        
+        {/* Play button for Vid30 Originals */}
+        {item.origin === 'founder' && item.videoUrl && (
+          <button className="play-button" onClick={() => onPlay(item)} type="button">
+            ▶ Play
+          </button>
+        )}
+        
         <p className="detail-disclaimer">
           Content rating is a demo classification and does not represent an official certification.
           {item.familySafe
@@ -208,6 +263,7 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<DiscoverResponse | null>(null);
   const [selectedItem, setSelectedItem] = useState<DiscoveryResultItem | null>(null);
+  const [playingItem, setPlayingItem] = useState<DiscoveryResultItem | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const runDiscover = useCallback(async (q: string, fm: boolean) => {
@@ -407,7 +463,22 @@ export function App() {
 
       {/* Detail overlay */}
       {selectedItem && (
-        <DetailPanel item={selectedItem} onClose={() => setSelectedItem(null)} />
+        <DetailPanel
+          item={selectedItem}
+          onClose={() => setSelectedItem(null)}
+          onPlay={(item) => {
+            setPlayingItem(item);
+            setSelectedItem(null);
+          }}
+        />
+      )}
+
+      {/* Player screen */}
+      {playingItem && (
+        <PlayerScreen
+          item={playingItem}
+          onBack={() => setPlayingItem(null)}
+        />
       )}
 
       {/* Advanced Mode modal */}

@@ -36,6 +36,8 @@ export interface CatalogItem {
   origin: ContentOrigin;
   /** Detailed content guidelines for granular filtering */
   guidelines: ContentGuidelines;
+  /** Optional video URL or stream path (MP4, HLS, etc.). For founder content only. */
+  videoUrl?: string;
 }
 
 export interface CatalogProvider {
