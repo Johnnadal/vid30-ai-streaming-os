@@ -5,6 +5,11 @@
  * server-side via the Lambda function. No AWS credentials are required here.
  */
 
+// VITE_API_URL env var controls which backend is used:
+//   Local dev  → http://localhost:3000   (set via apps/web/.env.local)
+//   Production → https://jows41bdb5.execute-api.eu-west-3.amazonaws.com/prod
+// If running the demo locally, always set VITE_API_URL=http://localhost:3000
+// so the local catalog (with videoUrl, imageUrl, heroUrl) is used.
 const API_BASE_URL =
   (import.meta as unknown as { env: Record<string, string> }).env
     ?.VITE_API_URL ??
