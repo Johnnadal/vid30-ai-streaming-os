@@ -1,561 +1,383 @@
-# React Native Multi-TV App Sample
+# Vid30 — AI Streaming Operating System
 
-> **Vid30 — AI Streaming Operating System**  
-> Sprint 3 — AI Streaming Intelligence · See [SPRINT3.md](./SPRINT3.md) for the full CTO brief.
+> **Amazon App Dev Hackathon 2026**  
+> Natural language film discovery and video playback for Smart TV, Fire TV, and web.
 
-[![React Native](https://img.shields.io/badge/React%20Native-v0.81-blue.svg)](https://reactnative.dev/)
-[![License: MIT-0](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/AmazonAppDev/react-native-multi-tv-app-sample/blob/main/LICENSE)
-
-A production-ready TV application template built with React Native, supporting Android TV, Apple TV, Fire TV (with Fire OS), Fire TV (with Vega OS) and Web TV platforms. This monorepo showcases best practices for building cross-platform TV applications with shared UI components, efficient focus management, and platform-specific optimizations.
-
-![Demo GIF](./tvdemo.gif)
-
-## Table of Contents
-
-- [Features](#features)
-- [Architecture](#architecture)
-- [Getting Started](#getting-started)
-- [Building and Running](#building-and-running)
-- [Development](#development)
-- [Project Structure](#project-structure)
-- [Technologies](#technologies)
-- [Contributing](#contributing)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
-
-## Features
-
-### AI Streaming Intelligence (Sprint 3)
-
-- **Natural Language Discovery**: Describe what you want in plain language — mood, duration, context, anything
-- **Structured Intent Extraction**: The API parses queries into `mood`, `cinematic`, `maxDurationMinutes`, `genres`, `keywords`, `watchingContext`
-- **Multi-criteria Filtering**: Strict filters (duration, family safe) combined with relevance scoring
-- **Family Mode**: Deterministic metadata filter — only G/PG/PG-13 content when enabled. Never an AI inference.
-- **Watching Context**: Extracts `solo / couple / family / friends` from the query as a discovery hint
-- **MVP Web**: Full discovery UI at `apps/web` — launch with `yarn dev:web-mvp`
-- **API**: `POST /discover` via AWS Lambda + Amazon Bedrock Nova Lite (eu-west-3)
-
-### Core Functionality
-
-- **Multi-Platform Support**: Single codebase running on Android TV, Apple TV, Fire TV FOS, Fire TV Vega OS and Web
-- **Video Playback**: Integrated video player with [react-native-video](https://github.com/TheWidlarzGroup/react-native-video)
-- **Spatial Navigation**: TV-optimized focus management with [React TV Space Navigation](https://github.com/bamlab/react-tv-space-navigation)
-- **Remote Control Support**: Native remote control integration for all TV platforms
-
-### UI Components
-
-- **Drawer Navigation**: Customizable left-side drawer with menu items
-- **Grid Layouts**: Responsive content grids optimized for TV screens
-- **Dynamic Hero Banner**: Header image that updates based on focused content
-- **Detail Screens**: Rich content detail pages with metadata and actions
-
-### Video Player Features
-
-- **Overlay Controls**: Custom video controls with spatial navigation support
-  - Play/pause button with visual state
-  - Seek bar with current time and duration display
-  - Exit button to return to previous screen
-  - Auto-hide after 5 seconds of inactivity
-- **Buffering Indicators**: Visual feedback during video loading and seeking
-- **Remote Control Integration**: Full support for play/pause, seek forward/backward (10s intervals), and exit
-- **Platform Optimizations**:
-  - Native controls on iOS/tvOS
-  - Custom overlay on Android TV, Fire TV, and Web
-  - Hardware-accelerated rendering on Fire TV Vega with W3C Media APIs
-
-### Dynamic Content Loading
-
-- **External Catalog API**: Fetch movie content dynamically from remote JSON endpoint
-- **Rich Metadata Support**:
-  - Genres, ratings, and content ratings
-  - Release year and duration
-  - Trending flags
-  - Multiple video source formats
-- **Type-Safe Transforms**: Automatic conversion from catalog API format to UI-ready data structures
-- **Error Handling**: Graceful fallback and error states for failed API requests
-- **Extensible**: Easy to swap catalog endpoint or add new metadata fields
-
-### Architecture
-
-- **Monorepo Structure**: Yarn workspaces with apps and shared packages
-- **Shared UI Library**: Reusable components across all platforms
-- **Platform-Specific Code**: Automatic resolution of `.android.ts`, `.ios.ts`, `.kepler.ts` files
-- **Type Safety**: Full TypeScript support with shared configurations
-
-### App Variants
-
-**expo-multi-tv**
-
-- Universal application built with Expo and react-native-tvos
-- Supports Android TV, Apple TV, Fire TV Fire OS, and Web
-- Uses React Navigation for screen management
-- Cross-platform focus management
-
-**vega**
-
-- Fire TV with Vega OS optimized build using Amazon Vega SDK
-- Optimized performance for Fire TV devices
-- Native remote control support via TVEventHandler
-
-Both apps share components from the `@multi-tv/shared-ui` package.
-
-## Architecture
-
-This project uses a monorepo structure with Yarn workspaces to manage multiple packages and applications.
-
-```
-react-native-multi-tv-app-sample/
-├── apps/
-│   ├── api/                 # Fastify local server (dev) + shared logic
-│   ├── expo-multi-tv/       # Universal TV app (Android TV, Apple TV, Fire TV FOS, Web)
-│   ├── lambda/              # AWS Lambda handler (vid30-discovery, eu-west-3)
-│   ├── vega/                # Fire TV Vega optimized app (Vega SDK)
-│   └── web/                 # MVP Web — Vite + React (Sprint 3)
-├── packages/
-│   └── shared-ui/           # Shared components, screens, navigation, discoverService
-├── package.json             # Workspace configuration
-└── tsconfig.base.json       # Shared TypeScript configuration
-```
-
-### Architecture Overview
-
-```
-┌─────────────────────────────────────────────────────────┐
-│       React Native Multi-TV Monorepo                    │
-├──────────────────────────┬──────────────────────────────┤
-│ Apps                     │ Packages                     │
-├──────────────────────────┼──────────────────────────────┤
-│ expo-multi-tv            │ shared-ui                    │
-│   ├─ Expo SDK 54         │   ├─ Components              │
-│   ├─ React Navigation    │   ├─ Screens                 │
-│   ├─ react-native-tvos   │   ├─ Navigation              │
-│   └─ Platforms:          │   ├─ Hooks                   │
-│       • Android TV       │   ├─ Theme                   │
-│       • Apple TV         │   └─ Remote Control          │
-│       • Fire TV          │       ├─ .android.ts         │
-│       • Web              │       ├─ .ios.ts             │
-│                          │       └─ .kepler.ts          │
-│ vega                     │                              │
-│   ├─ Vega SDK            │                              │
-│   ├─ @amazon-devices/*   │                              │
-│   └─ Platform: Vega OS   │                              │
-└──────────────────────────┴──────────────────────────────┘
-```
-
-The `@multi-tv/shared-ui` package contains all reusable UI components, screens, and navigation logic. Platform-specific implementations use file extensions (`.android.ts`, `.ios.ts`, `.kepler.ts`) that Metro bundler automatically resolves at build time.
-
-## Getting Started
-
-### Prerequisites
-
-Before you begin, ensure you have the following installed:
-
-- **Node.js**: v18 or higher
-- **Yarn**: v4.5.0 (configured via packageManager field)
-- **Platform-specific tools**:
-  - **Android TV**: Android Studio with Android SDK
-  - **Apple TV**: Xcode (macOS required) with tvOS SDK
-  - **Fire TV**: [Amazon Vega SDK](https://developer.amazon.com/docs/vega/0.21/install-vega-sdk.html)
-  - **Web**: Modern web browser
-
-### Installation
-
-Clone the repository and install dependencies:
-
-```bash
-# Clone the repository
-git clone https://github.com/AmazonAppDev/react-native-multi-tv-app-sample.git
-cd react-native-multi-tv-app-sample
-
-# Install all dependencies
-yarn install
-```
-
-## Building and Running
-
-### Quick Start
-
-Run the universal app on different platforms:
-
-```bash
-# Android TV and Fire TV FOS
-yarn dev:android
-
-# Apple TV
-yarn dev:ios
-
-# Web
-yarn dev:web
-
-```
-
-### Platform-Specific Instructions
-
-#### Android TV
-
-1. Start Metro bundler:
-
-   ```bash
-   yarn dev
-   ```
-
-2. In a new terminal, run on Android TV:
-   ```bash
-   yarn dev:android
-   ```
-
-Or directly from the app directory:
-
-```bash
-cd apps/expo-multi-tv
-yarn android
-```
-
-#### Apple TV
-
-1. Start Metro bundler:
-
-   ```bash
-   yarn dev
-   ```
-
-2. In a new terminal, run on Apple TV:
-   ```bash
-   yarn dev:ios
-   ```
-
-Or directly from the app directory:
-
-```bash
-cd apps/expo-multi-tv
-yarn ios
-```
-
-#### Web - Useful for LG WebOS and Tizen
-
-Development server:
-
-```bash
-yarn dev:web
-```
-
-Or directly from the app directory:
-
-```bash
-cd apps/expo-multi-tv
-yarn web
-```
-
-Production build:
-
-```bash
-cd apps/expo-multi-tv
-npx expo export --platform web
-npx serve dist
-```
-
-#### Fire TV (Vega)
-
-For the Fire TV optimized build:
-
-```bash
-# Development build
-yarn dev:vega
-
-# Production build
-yarn build:vega
-
-# Debug build
-yarn build:vega:debug
-```
-
-Or directly from the app directory:
-
-```bash
-cd apps/vega
-yarn build
-```
-
-### Available Commands
-
-#### Workspace Commands
-
-| Command            | Description                       |
-| ------------------ | --------------------------------- |
-| `yarn dev`         | Start expo-multi-tv Metro bundler |
-| `yarn dev:android` | Run on Android TV                 |
-| `yarn dev:ios`     | Run on Apple TV                   |
-| `yarn dev:web`     | Run on Web (expo-multi-tv)        |
-| `yarn dev:web-mvp` | **Run MVP Web (Vite, Sprint 3)**  |
-| `yarn build:web-mvp` | Build MVP Web for production    |
-| `yarn dev:vega`    | Start vega Metro bundler          |
-| `yarn build:vega`  | Build vega for Fire TV            |
-| `yarn format`      | Format code with Prettier         |
-| `yarn clean:all`   | Clean all node_modules            |
-
-#### App-Specific Commands
-
-Navigate to the app directory first:
-
-```bash
-# expo-multi-tv
-cd apps/expo-multi-tv
-yarn start      # Start Metro bundler
-yarn android    # Run on Android TV
-yarn ios        # Run on Apple TV
-yarn web        # Run on Web
-yarn test       # Run tests
-yarn lint       # Lint code
-
-# vega
-cd apps/vega
-yarn start      # Start Metro bundler
-yarn build      # Build for Fire TV
-yarn test       # Run tests
-yarn lint       # Lint code
-```
-
-## Development
-
-### Project Structure
-
-The monorepo contains the following packages:
-
-#### `@multi-tv/expo-multi-tv`
-
-Universal TV application built with Expo, supporting Android TV, Apple TV, Fire TV, and Web.
-
-**Key Technologies:**
-
-- Expo SDK 54
-- React Navigation 7
-- react-native-tvos
-- React TV Space Navigation
-
-#### `@multi-tv/vega`
-
-Fire TV optimized application using Amazon's Vega SDK.
-
-**Key Technologies:**
-
-- Amazon Vega SDK
-- @amazon-devices packages
-- Native Fire TV remote integration
-- Custom navigation optimizations
-
-#### `@multi-tv/shared-ui`
-
-Shared component library used by both applications.
-
-**Exports:**
-
-- **Components**: `FocusablePressable`, `CustomDrawerContent`, `MenuContext`
-- **Screens**: `HomeScreen`, `DetailsScreen`, `PlayerScreen`, `ExploreScreen`, `TVScreen`
-- **Navigation**: `DrawerNavigator`, `RootNavigator`, `AppNavigator`
-- **Hooks**: `scaledPixels`, `useMenuContext`
-- **Theme**: Centralized theming configuration
-- **Remote Control**: Platform-specific remote control managers
-
-### Adding New Features
-
-1. Develop shared components in `packages/shared-ui/src/`
-2. Add platform-specific implementations using file extensions:
-   - `.android.ts` for Android TV
-   - `.ios.ts` for Apple TV
-   - `.kepler.ts` for Fire TV
-3. Export from `packages/shared-ui/src/index.ts`
-4. Import in apps via `@multi-tv/shared-ui`
-
-Example:
-
-```typescript
-// packages/shared-ui/src/components/MyComponent.tsx
-export const MyComponent = () => {
-  /* ... */
-};
-
-// packages/shared-ui/src/index.ts
-export { MyComponent } from './components/MyComponent';
-
-// apps/expo-multi-tv/App.tsx
-import { MyComponent } from '@multi-tv/shared-ui';
-```
-
-### Remote Control Implementation
-
-The project includes platform-specific remote control managers:
-
-| Platform               | Implementation                    | Technology            |
-| ---------------------- | --------------------------------- | --------------------- |
-| Android TV/Fire TV FOS | `RemoteControlManager.android.ts` | react-native-keyevent |
-| Apple TV               | `RemoteControlManager.ios.ts`     | Native tvOS events    |
-| Fire TV Vega OS        | `RemoteControlManager.kepler.ts`  | Kepler TVEventHandler |
-
-All managers implement `RemoteControlManagerInterface` and integrate with `react-tv-space-navigation`.
-
-#### Remote Control Key Mappings
-
-The following keys are supported across all platforms in the video player:
-
-| Key/Button   | Action                   | Platforms           |
-| ------------ | ------------------------ | ------------------- |
-| PlayPause    | Toggle play/pause        | All                 |
-| Select/Enter | Activate focused item    | All                 |
-| Back         | Exit player or go back   | All                 |
-| Left         | Seek backward 10 seconds | All (in player)     |
-| Right        | Seek forward 10 seconds  | All (in player)     |
-| FastForward  | Seek forward 10 seconds  | All (in player)     |
-| Rewind       | Seek backward 10 seconds | All (in player)     |
-| Up/Down      | Navigate menu items      | All (in navigation) |
-
-**Platform-Specific Notes:**
-
-- **iOS/tvOS**: Uses native video controls by default; custom overlay disabled
-- **Android TV/Fire TV**: Custom overlay with spatial navigation for all controls
-- **Web**: Keyboard support with arrow keys and spacebar for play/pause
-- **Fire TV Vega**: Hardware-accelerated video with W3C Media APIs
-
-## Technologies
-
-This project is built with modern React Native and TV development tools:
-
-| Technology                | Version | Purpose                    |
-| ------------------------- | ------- | -------------------------- |
-| React Native              | v0.81   | Core framework (tvOS fork) |
-| Expo                      | SDK 54  | Development platform       |
-| TypeScript                | v5.7    | Type safety                |
-| Yarn Workspaces           | v4.5    | Monorepo management        |
-| React Navigation          | v7      | Screen navigation          |
-| react-tv-space-navigation | v6.0.0-beta1   | TV focus management        |
-| react-native-video        | Latest  | Video playback             |
-| Amazon Vega SDK           | Latest  | Fire TV Vega OS            |
-
-## Contributing
-
-Contributions are welcome! This project is an open-source sample designed to help developers build TV applications.
-
-### How to Contribute
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests and linting (`yarn test:all && yarn lint:all`)
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-### Development Guidelines
-
-- Follow the existing code style
-- Write tests for new features
-- Update documentation as needed
-- Ensure all tests pass before submitting PR
-- Use conventional commit messages
-
-## Troubleshooting
-
-### iOS Build Issues
-
-**Error: "can't access lexical declaration 'X' before initialization"**
-
-- This typically occurs when functions are referenced before they're defined
-- Solution: Functions should be defined before useEffect hooks that reference them
-
-**Error: "No such file or directory: node"**
-
-- The Xcode build can't find the Node.js binary
-- Solution: Update `apps/expo-multi-tv/ios/.xcode.env.local` with correct Node path:
-  ```bash
-  export NODE_BINARY=/opt/homebrew/bin/node  # or your node path
-  ```
-- Find your node path with: `which node`
-- Note: `.xcode.env.local` is gitignored (machine-specific configuration)
-
-**Pods Installation Issues**
-
-- Clean and reinstall:
-  ```bash
-  cd apps/expo-multi-tv/ios
-  rm -rf Pods Podfile.lock
-  pod install
-  ```
-
-### Android TV Build Issues
-
-**Metro Bundler Port Conflicts**
-
-- If port 8081 is in use:
-  ```bash
-  yarn start --port 8082
-  ```
-
-**ADB Device Not Found**
-
-- Ensure Android TV/Fire TV is connected:
-  ```bash
-  adb devices
-  adb connect <device-ip>:5555
-  ```
-
-### Fire TV Vega Issues
-
-**Vega SDK Not Found**
-
-- Ensure Vega SDK is installed and in PATH
-- Check SDK path: `echo $KEPLER_SDK_HOME`
-- Download from: [Amazon Vega Developer Portal](https://developer.amazon.com/vega)
-
-### Web Platform Issues
-
-**Video Player White Screen**
-
-- Check browser console for JavaScript errors
-- Ensure catalog API is accessible
-- Verify video URLs are CORS-enabled
-
-**Spatial Navigation Not Working**
-
-- Use keyboard arrows for navigation on web
-- Focus management requires keyboard or gamepad input
-
-### Common Issues
-
-**"Module not found" Errors**
-
-- Clear cache and reinstall:
-  ```bash
-  yarn clean:all
-  yarn install
-  ```
-
-**TypeScript Errors**
-
-- Run type checking:
-  ```bash
-  yarn typecheck
-  ```
-
-**Video Playback Issues**
-
-- Verify video URLs are accessible
-- Check network connectivity
-- Ensure video format is supported (MP4 recommended)
-
-## License
-
-This project is licensed under the MIT-0 License - see the [LICENSE](./LICENSE) file for details.
-
-## Resources
-
-- [React Native TV OS](https://github.com/react-native-tvos/react-native-tvos) - TV platform support
-- [React TV Space Navigation](https://github.com/bamlab/react-tv-space-navigation) - Spatial navigation library
-- [Amazon Kepler Developer Portal](https://developer.amazon.com/vega) - Fire TV development resources
-- [Expo Documentation](https://expo.dev) - Expo SDK documentation
-
-## Support
-
-For questions, issues, or feature requests, please open an issue on GitHub.
+[![License: MIT-0](https://img.shields.io/badge/License-MIT--0-yellow.svg)](./LICENSE)
+[![Tests](https://img.shields.io/badge/tests-41%2F41-brightgreen)](./apps/api/src/discover.test.ts)
+[![Platform](https://img.shields.io/badge/platform-Fire%20TV%20%7C%20Android%20TV%20%7C%20Web-blue)](./apps/web)
 
 ---
 
-Made for TV app developers
+## Demo Video
+
+<!-- ─────────────────────────────────────────────────────────────────────────
+     PLACEHOLDER — Replace the two URLs below once the video is published.
+
+     DEMO_VIDEO_URL      → YouTube / Vimeo URL of the demo video
+     THUMBNAIL_IMAGE_URL → Direct URL to the video thumbnail image
+                           (e.g. https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)
+     ───────────────────────────────────────────────────────────────────────── -->
+
+[![Vid30 Demo — AI Film Discovery & Playback](https://via.placeholder.com/1280x720.png?text=Vid30+Demo+Video+%E2%80%94+Coming+Soon)](DEMO_VIDEO_URL)
+
+> 📹 *Demo video link to be added. Replace `DEMO_VIDEO_URL` and `THUMBNAIL_IMAGE_URL` above with real values once the video is published.*
+
+---
+
+## What is Vid30?
+
+Vid30 is a streaming intelligence layer built on top of a React Native multi-TV starter. Users describe what they want to watch in plain language and the system uses **Amazon Bedrock Nova Lite** to extract structured intent, score catalog films, and return ranked results.
+
+**"Something dark and cinematic under 90 minutes"** → AI extracts mood, duration cap, cinematic flag → scores 41 catalog films → returns ranked matches with content ratings.
+
+The same discovery engine runs on **Fire TV (Vega OS)**, **Android TV**, **Apple TV**, and a **web browser** from a single monorepo.
+
+---
+
+## Features
+
+All features listed here are confirmed by the codebase and test suite.
+
+### AI Discovery
+- Natural language query parsing via **Amazon Bedrock Nova Lite** (`eu.amazon.nova-lite-v1:0`, region `eu-west-3`)
+- Structured intent extraction: `mood`, `cinematic`, `maxDurationMinutes`, `genres`, `keywords`, `watchingContext`
+- Multi-criteria scoring: hard filters first (duration, Family Mode), then relevance score
+- Multilingual support — French queries work with the rule-based fallback provider
+- Deterministic fallback (`RuleBasedAIProvider`) for local development without AWS credentials
+
+### Family Mode
+- One-toggle filter: restricts results to `contentRating ∈ {G, PG, PG-13}`
+- Deterministic — computed at catalog creation, never AI-inferred
+- Instantly re-runs the current query on toggle change
+
+### Film Catalog
+- **41 films** with `contentRating`, `familySafe`, `genres`, `mood`, `durationMinutes`
+- **14 Vid30 Originals** — founder films with `imageUrl` (600×338), `heroUrl` (1920×1080), and `videoUrl`
+- **9 Vid30 Originals** have real MP4 source files served from `apps/web/public/videos/`
+- **5 Vid30 Originals** display a "Video not available" fallback (no source file)
+
+### Web MVP (`apps/web`)
+- Natural language input with 8 suggestion chips
+- Intent panel showing what the AI understood
+- Film cards with artwork thumbnails for Vid30 Originals
+- Detail panel with hero banner image
+- HTML5 video player with native controls, poster image, autoPlay
+- **▶ Play** button appears only for films with a real `videoUrl`
+- Family Mode toggle with visual ON/OFF state
+- Error, loading, and empty-state handling
+
+### TV Apps
+- `apps/expo-multi-tv` — React Native, targets Android TV, Apple TV, Fire TV FOS, and Expo web
+- `apps/vega` — Fire TV Vega OS build using Amazon Kepler SDK
+- Shared screens: `HomeScreen`, `DetailsScreen`, `PlayerScreen`, `ExploreScreen`
+- D-pad navigation via `react-tv-space-navigation`
+- `react-native-video` v6 for native playback on TV devices
+
+> **Note:** The TV apps build and compile cleanly. Runtime validation on a physical Fire TV Vega OS device has not been completed — see [Roadmap](#roadmap).
+
+---
+
+## Architecture
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│  Client apps                                                   │
+│  ┌─────────────┐  ┌──────────────────┐  ┌────────────────┐   │
+│  │  apps/web   │  │ apps/expo-multi- │  │   apps/vega    │   │
+│  │ Vite+React  │  │  tv (RN/Expo)   │  │  (Kepler SDK)  │   │
+│  └──────┬──────┘  └────────┬─────────┘  └───────┬────────┘   │
+│         └─────────────────┼────────────────────┘             │
+│                           │  POST /discover                   │
+├───────────────────────────┼───────────────────────────────────┤
+│  API layer                │                                   │
+│  ┌───────────────────┐    │    ┌──────────────────────────┐   │
+│  │  apps/api         │◄───┘    │  apps/lambda             │   │
+│  │  Fastify (local)  │         │  AWS Lambda + API GW     │   │
+│  │  port 3000        │         │  eu-west-3 (deployed)    │   │
+│  └─────────┬─────────┘         └────────────┬─────────────┘   │
+│            └──────────────────────────────┐ │                 │
+├───────────────────────────────────────────┼─┼─────────────────┤
+│  AI layer                                 │ │                 │
+│                            ┌──────────────▼─▼──────────────┐  │
+│                            │  Amazon Bedrock Nova Lite      │  │
+│                            │  eu.amazon.nova-lite-v1:0     │  │
+│                            │  region: eu-west-3            │  │
+│                            └───────────────────────────────┘  │
+└────────────────────────────────────────────────────────────────┘
+```
+
+**Deployed services:**
+- AWS Lambda function `vid30-discovery` — eu-west-3
+- API Gateway HTTP API: `https://jows41bdb5.execute-api.eu-west-3.amazonaws.com/prod`
+- Amazon Bedrock Nova Lite — invoked by the Lambda on every `/discover` call
+
+**Local-only services:**
+- Fastify dev server (`apps/api`) — runs on `http://localhost:3000`
+- Vite dev server (`apps/web`) — runs on `http://localhost:5173`
+
+> The deployed Lambda is from Sprint 3 and does not yet include `videoUrl` fields.  
+> To see full artwork and video playback, use the local Fastify server (instructions below).
+
+---
+
+## Local Setup & Launch
+
+### Prerequisites
+
+| Requirement | Version |
+|---|---|
+| Node.js | v18 or higher |
+| Yarn | v4.5.0 (`npm install -g yarn`) |
+| AWS credentials | Optional — only needed for Bedrock (see below) |
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/Johnnadal/vid30-ai-streaming-os.git
+cd vid30-ai-streaming-os
+yarn install
+```
+
+### 2. Configure environment
+
+```bash
+# Copy the example file — fill in your AWS credentials if you want Bedrock
+cp .env.example apps/api/.env
+```
+
+Key variables in `.env.example`:
+
+```bash
+AWS_REGION=eu-west-3
+BEDROCK_MODEL_ID=eu.amazon.nova-lite-v1:0
+AI_PROVIDER=bedrock      # or "rule-based" for local dev without AWS
+PORT=3000
+```
+
+> **No AWS credentials?** Set `AI_PROVIDER=rule-based` in `apps/api/.env` — the deterministic fallback works offline.
+
+Then point the web app at the local server:
+
+```bash
+# Create apps/web/.env.local  (gitignored — never committed)
+echo "VITE_API_URL=http://localhost:3000" > apps/web/.env.local
+```
+
+### 3. Start the API server
+
+```bash
+cd apps/api
+yarn dev
+# Fastify starts on http://localhost:3000
+# tsx watch — auto-restarts on file changes
+```
+
+Verify it's up:
+```bash
+curl http://localhost:3000/health
+# → {"status":"ok"}
+```
+
+### 4. Start the web app
+
+Open a second terminal:
+
+```bash
+cd apps/web
+yarn dev
+# Vite starts on http://localhost:5173 (opens automatically)
+```
+
+### 5. Try the demo
+
+Open **http://localhost:5173** and try these queries:
+
+| Query | What to observe |
+|---|---|
+| `Something dark and cinematic under 90 minutes` | Mood + duration + cinematic flag extracted |
+| `A funny comedy for a family movie night` | Family context detected, comedy affinity boost |
+| `Soirée cinéma en famille` | French query works |
+| `Something like Blade Runner but shorter` | Reference inference → sci-fi + thriller |
+
+**Playback flow:**
+1. Search → film cards appear, Vid30 Originals show artwork thumbnails
+2. Click a card with the 🎬 badge → detail panel with hero banner
+3. Click **▶ Play** → fullscreen HTML5 player
+4. Press **✕** → back to results
+
+---
+
+## API Reference
+
+### `POST /discover`
+
+**Request:**
+```json
+{
+  "query": "Something dark and cinematic under 90 minutes",
+  "familyMode": false
+}
+```
+
+**Response:**
+```json
+{
+  "intent": {
+    "mood": "dark",
+    "cinematic": true,
+    "maxDurationMinutes": 90,
+    "genres": [],
+    "keywords": ["dark", "cinematic"],
+    "watchingContext": null,
+    "familyMode": false
+  },
+  "results": [
+    {
+      "id": "vid30-signal-lost",
+      "title": "Signal Lost",
+      "durationMinutes": 28,
+      "contentRating": "PG-13",
+      "familySafe": true,
+      "origin": "founder",
+      "videoUrl": "/videos/vid30-signal-lost.mp4",
+      "imageUrl": "/images/film4.jpg",
+      "heroUrl": "/images/film4-hero.jpg"
+    }
+  ]
+}
+```
+
+### `GET /health`
+
+```json
+{ "status": "ok" }
+```
+
+**Production endpoint:** `https://jows41bdb5.execute-api.eu-west-3.amazonaws.com/prod`
+
+---
+
+## Run Tests
+
+```bash
+cd apps/api
+yarn test
+# 41/41 tests pass (Vitest)
+```
+
+Tests cover: intent extraction, catalog filtering, Family Mode policy, duration parsing, `watchingContext` affinities, and scoring edge cases.
+
+---
+
+## Project Structure
+
+```
+vid30-ai-streaming-os/
+├── apps/
+│   ├── api/              Local Fastify dev server — catalog, AI providers, /discover
+│   ├── expo-multi-tv/    Universal TV app — Android TV, Apple TV, Fire TV FOS, Expo web
+│   ├── lambda/           AWS Lambda handler (imports from apps/api)
+│   ├── vega/             Fire TV Vega OS app — Amazon Kepler SDK
+│   └── web/              Web MVP — Vite + React (hackathon demo)
+├── packages/
+│   └── shared-ui/        Shared screens, navigation, player, discovery service
+├── images/               Film artwork originals (film1–9 JPG + hero variants)
+├── aiVideos/             Film source files (film1–9, no extension — valid MP4)
+├── README.md             This document
+├── README-AMAZON-ORIGINAL.md  Original Amazon starter README (preserved)
+├── HACKATHON-README.md   Jury quickstart guide
+├── SPRINT-HISTORY.md     Technical history — Sprints 1 to 4
+└── SPRINT3.md / SPRINT3-EN.md  Sprint 3 CTO brief (FR + EN)
+```
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| AI | Amazon Bedrock Nova Lite `eu.amazon.nova-lite-v1:0` |
+| Backend | AWS Lambda + API Gateway, region `eu-west-3` |
+| Local dev server | Fastify 5 + tsx watch |
+| TV apps | React Native tvOS 0.81, Expo SDK 54 |
+| Fire TV Vega OS | Amazon Vega SDK + `@amazon-devices/*` packages |
+| Web MVP | Vite 6 + React 18 + TypeScript 5 |
+| Shared UI | `packages/shared-ui` — screens, navigation, player components |
+| Video (TV) | `react-native-video` v6 |
+| Video (web) | HTML5 `<video>` element |
+| TV navigation | `react-tv-space-navigation` v6 |
+| Tests | Vitest — 41 tests |
+| Monorepo | Yarn 4 workspaces |
+| Schema validation | Zod v4 |
+
+---
+
+## Roadmap
+
+Items marked ✅ are confirmed working. Items marked 🔲 are planned or pending validation.
+
+| Item | Status |
+|---|---|
+| AI natural language discovery (`/discover`) | ✅ Deployed and tested |
+| Family Mode filter | ✅ Web + TV (ExploreScreen) |
+| Web MVP — search, intent panel, results | ✅ Verified in browser |
+| Web MVP — film detail with hero image | ✅ Verified in browser |
+| Web MVP — HTML5 video playback (9 films) | ✅ Verified in browser |
+| 41-film catalog with content ratings | ✅ Tested (41/41) |
+| expo-multi-tv — ExploreScreen wired to API | ✅ Code complete |
+| Vega OS — TypeScript + navigation types | ✅ Corrected Sprint 3 |
+| Fire TV Vega OS — runtime validation | 🔲 Requires Vega SDK device |
+| expo-multi-tv — runtime on Android TV device | 🔲 Not validated on device |
+| Lambda — update with Sprint 4 catalog fields | 🔲 `videoUrl`/`imageUrl` missing in prod |
+| BYOK (bring-your-own-key AI provider) | 🔲 UI placeholder only |
+| Watchlist / viewing history | 🔲 Not built |
+| CDN / HLS streaming for longer films | 🔲 Not built |
+| Pagination of discovery results | 🔲 Not built |
+
+---
+
+## TV App Launch
+
+```bash
+# Android TV / Fire TV FOS — requires Android Studio + adb device connected
+cd apps/expo-multi-tv
+yarn android
+
+# Apple TV — requires macOS + Xcode
+yarn ios
+
+# Expo web (browser, no TV device)
+yarn web
+
+# Fire TV Vega OS — requires Vega SDK + $KEPLER_SDK_HOME configured
+cd apps/vega
+yarn build:debug
+```
+
+---
+
+## Credits & Acknowledgements
+
+Vid30 is built on top of the **[React Native Multi-TV App Sample](https://github.com/AmazonAppDev/react-native-multi-tv-app-sample)** by Amazon App Dev, which provided the cross-platform TV foundation (expo-multi-tv, vega, shared-ui, spatial navigation, video player).
+
+The original starter README and credits are preserved in [README-AMAZON-ORIGINAL.md](./README-AMAZON-ORIGINAL.md).
+
+> Licensed under [MIT-0](./LICENSE) — see license file for details.  
+> Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+---
+
+## Related Documents
+
+| Document | Description |
+|---|---|
+| [`HACKATHON-README.md`](./HACKATHON-README.md) | Condensed jury quickstart guide |
+| [`SPRINT-HISTORY.md`](./SPRINT-HISTORY.md) | Full technical history, Sprints 1–4 |
+| [`SPRINT3-EN.md`](./SPRINT3-EN.md) | Sprint 3 CTO brief (English) |
+| [`SPRINT3.md`](./SPRINT3.md) | Sprint 3 CTO brief (French original) |
+| [`README-AMAZON-ORIGINAL.md`](./README-AMAZON-ORIGINAL.md) | Original Amazon starter README |
+
+---
+
+*Vid30 — Built for Amazon App Dev Hackathon 2026*
