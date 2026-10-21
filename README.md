@@ -1,5 +1,8 @@
 # React Native Multi-TV App Sample
 
+> **Vid30 — AI Streaming Operating System**  
+> Sprint 3 — AI Streaming Intelligence · See [SPRINT3.md](./SPRINT3.md) for the full CTO brief.
+
 [![React Native](https://img.shields.io/badge/React%20Native-v0.81-blue.svg)](https://reactnative.dev/)
 [![License: MIT-0](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/AmazonAppDev/react-native-multi-tv-app-sample/blob/main/LICENSE)
 
@@ -21,6 +24,16 @@ A production-ready TV application template built with React Native, supporting A
 - [License](#license)
 
 ## Features
+
+### AI Streaming Intelligence (Sprint 3)
+
+- **Natural Language Discovery**: Describe what you want in plain language — mood, duration, context, anything
+- **Structured Intent Extraction**: The API parses queries into `mood`, `cinematic`, `maxDurationMinutes`, `genres`, `keywords`, `watchingContext`
+- **Multi-criteria Filtering**: Strict filters (duration, family safe) combined with relevance scoring
+- **Family Mode**: Deterministic metadata filter — only G/PG/PG-13 content when enabled. Never an AI inference.
+- **Watching Context**: Extracts `solo / couple / family / friends` from the query as a discovery hint
+- **MVP Web**: Full discovery UI at `apps/web` — launch with `yarn dev:web-mvp`
+- **API**: `POST /discover` via AWS Lambda + Amazon Bedrock Nova Lite (eu-west-3)
 
 ### Core Functionality
 
@@ -93,10 +106,13 @@ This project uses a monorepo structure with Yarn workspaces to manage multiple p
 ```
 react-native-multi-tv-app-sample/
 ├── apps/
+│   ├── api/                 # Fastify local server (dev) + shared logic
 │   ├── expo-multi-tv/       # Universal TV app (Android TV, Apple TV, Fire TV FOS, Web)
-│   └── vega/                # Fire TV Vega optimized app (Vega SDK)
+│   ├── lambda/              # AWS Lambda handler (vid30-discovery, eu-west-3)
+│   ├── vega/                # Fire TV Vega optimized app (Vega SDK)
+│   └── web/                 # MVP Web — Vite + React (Sprint 3)
 ├── packages/
-│   └── shared-ui/           # Shared components, screens, and navigation
+│   └── shared-ui/           # Shared components, screens, navigation, discoverService
 ├── package.json             # Workspace configuration
 └── tsconfig.base.json       # Shared TypeScript configuration
 ```
@@ -269,7 +285,9 @@ yarn build
 | `yarn dev`         | Start expo-multi-tv Metro bundler |
 | `yarn dev:android` | Run on Android TV                 |
 | `yarn dev:ios`     | Run on Apple TV                   |
-| `yarn dev:web`     | Run on Web                        |
+| `yarn dev:web`     | Run on Web (expo-multi-tv)        |
+| `yarn dev:web-mvp` | **Run MVP Web (Vite, Sprint 3)**  |
+| `yarn build:web-mvp` | Build MVP Web for production    |
 | `yarn dev:vega`    | Start vega Metro bundler          |
 | `yarn build:vega`  | Build vega for Fire TV            |
 | `yarn format`      | Format code with Prettier         |

@@ -2,16 +2,17 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 #
+# multitv et id = "com.giolaq.vid30tv.vega.main" => vid30tv 
 schema-version = 1
 
 [package]
-title = "Multi TV Vega App"
+title = "Vid30 Vega App"
 version = "0.1.0"
-id = "com.giolaq.multitv.vega"
+id = "com.vid30.vega"
 
 [components]
 [[components.interactive]]
-id = "com.giolaq.multitv.vega.main"
+id = "com.vid30.vega.main"
 runtime-module = "/com.amazon.kepler.keplerscript.runtime.loader_2@IKeplerScript_2_0"
 launch-type = "singleton"
 categories = [
@@ -24,7 +25,7 @@ categories = [
 ## ------------------------------------------------------------------------------
 [processes]
 [[processes.group]]
-component-ids = ["com.giolaq.multitv.vega.main"]
+component-ids = ["com.vid30.vega.main"]
 
 ## ------------------------------------------------------------------------------
 ## Wants - Optional capabilities
@@ -133,19 +134,19 @@ id = "/com.amazon.kepler.media@IContentLauncher1"
 id = "com.amazon.gipc.uuid.*"
 
 [[offers.interaction]]
-id = "com.giolaq.multitv.vega.main"
+id = "com.vid30.vega.main"
 
 [[offers.module]]
-id = "/com.giolaq.multitv.vega.main@IMod1"
+id = "/com.vid30.vega.main@IMod1"
 includes-messages = [
-    "pkg://com.giolaq.multitv.vega.main"
+    "pkg://com.vid30.vega.main"
 ]
 
 ## ------------------------------------------------------------------------------
 ## Message
 ## ------------------------------------------------------------------------------
 [[message]]
-uri = "pkg://com.giolaq.multitv.vega.main"
+uri = "pkg://com.vid30.vega.main"
 sender-privileges = ["*"]
 receiver-privileges = ["self"]
 
@@ -154,7 +155,7 @@ receiver-privileges = ["self"]
 ## ------------------------------------------------------------------------------
 [[extras]]
 key = "interface.provider"
-component-id = "com.giolaq.multitv.vega.main"
+component-id = "com.vid30.vega.main"
 
 [extras.value.application]
 # ------------------------------------------------------------------------------
@@ -163,7 +164,7 @@ component-id = "com.giolaq.multitv.vega.main"
 [[extras.value.application.interface]]
 interface_name = "com.amazon.kepler.media.IContentLauncherServer"
 attribute_options = ["partner-id"]
-static-values = { partner-id = "MULTI_TV" }
+static-values = { partner-id = "VID30_TV" }
 
 # ------------------------------------------------------------------------------
 # Vega Media Controls (VMC)

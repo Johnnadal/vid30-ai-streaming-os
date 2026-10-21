@@ -1,0 +1,95 @@
+import {
+  BedrockRuntimeClient,
+  ConverseCommand,
+} from "@aws-sdk/client-bedrock-runtime";
+import type { AIProvider, AIProviderContext } from "./AIProvider";
+import {
+  DiscoveryIntentSchema,
+  type DiscoveryIntent,
+} from "./types";
+
+export class BedrockProvider implements AIProvider {
+  private client: BedrockRuntimeClient;
+  private modelId: string;
+
+  constructor() {
+    // AWS_BEDROCK_REGION allows overriding the region for Bedrock calls independently
+    // from the Lambda execution region. Required for cross-region inference profiles.
+    const region = process.env.AWS_BEDROCK_REGION
+      ?? process.env.AWS_REGION
+      ?? "eu-west-3";
+    // eu. prefix is required for cross-region inference profiles in eu-west-3
+    this.modelId =
+      process.env.BEDROCK_MODEL_ID || "eu.amazon.nova-lite-v1:0";
+
+    // AWS SDK loads credentials automatically from environment / ~/.aws/credentials
+    this.client = new BedrockRuntimeClient({ region });
+  }
+
+  async extractDiscoveryIntent(
+    query: string,
+    context?: AIProviderContext,
+  ): Promise<DiscoveryIntent> {
+    const familyContext = context?.familyMode
+      ? `\nContext: this is a family viewing session. Prioritize age-appropriate genres (animation, adventure, comedy, family drama). Avoid horror, violence, and adult themes.`
+      : "";
+
+    const systemPrompt = `You are Vid30's intent parser. Your only job is to convert a viewer's request into a structured discovery intent.
+
+STRICT RULES:
+- Do NOT invent, suggest, or mention any movie or show titles.
+- Do NOT recommend content.
+- Do NOT explain your reasoning.
+- Return ONLY a valid JSON object — no markdown, no backticks, no extra text.${familyContext}
+
+FIELD DEFINITIONS:
+- mood: the emotional tone. Must be exactly one of: "dark" | "funny" | "romantic" | "mysterious" — or null if none fits.
+- cinematic: true if the viewer wants a visually impressive, epic, or film-like experience. Also true for references like "like a Nolan film", "blockbuster", "arthouse", "like Blade Runner".
+- maxDurationMinutes: the maximum runtime in minutes. Convert "under 2 hours" → 120, "90 min" → 90, "short" → 90, "shorter" (comparative) → use context. Null if not specified.
+- genres: array of relevant genres from this list only: ["action", "comedy", "drama", "horror", "mystery", "noir", "romance", "sci-fi", "thriller"]. Infer from context clues ("like Blade Runner" → ["sci-fi","thriller"], "spy" → ["thriller"], "family evening" → ["comedy","drama"]).
+- keywords: 2–5 meaningful content descriptors extracted from the query (e.g. "space", "detective", "rain", "cold war"). Exclude stop words and genre names.
+- watchingContext: the social viewing situation. Must be exactly one of: "solo" | "couple" | "family" | "friends" — or null if not inferable. Examples: "family movie night" → "family", "date night" → "couple", "with friends" → "friends", "by myself" → "solo". NOTE: this is a discovery hint only, not a safety filter.
+
+JSON structure:
+{
+  "mood": "dark" | "funny" | "romantic" | "mysterious" | null,
+  "cinematic": boolean,
+  "maxDurationMinutes": number | null,
+  "genres": string[],
+  "keywords": string[],
+  "watchingContext": "solo" | "couple" | "family" | "friends" | null
+}`;
+
+    const command = new ConverseCommand({
+      modelId: this.modelId,
+      system: [{ text: systemPrompt }],
+      messages: [
+        {
+          role: "user",
+          content: [{ text: query }],
+        },
+      ],
+      inferenceConfig: {
+        temperature: 0.1,
+        maxTokens: 500,
+      },
+    });
+
+    const response = await this.client.send(command);
+
+    const responseText =
+      response.output?.message?.content?.[0]?.text ?? "{}";
+
+    // Strip markdown code fences if the model wraps the JSON
+    const cleanedJson = responseText
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    const rawData = JSON.parse(cleanedJson);
+
+    // Strict schema validation — familyMode is NOT in the schema Nova Lite fills.
+    // It is injected by DiscoveryService after this call.
+    return DiscoveryIntentSchema.parse(rawData);
+  }
+}

@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Description: Vid30 AI Discovery — Lambda + API Gateway (Sprint 2)
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: nodejs22.x
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        BEDROCK_MODEL_ID: eu.amazon.nova-lite-v1:0
+        # Force the Bedrock client to eu-west-3 where the inference profile exists
+        AWS_BEDROCK_REGION: eu-west-3
+
+Resources:
+  # IAM Role for Lambda — least privilege: only Bedrock InvokeModel
+  Vid30DiscoveryFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: vid30-discovery-lambda-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: BedrockInvokePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                  - bedrock:InvokeModelWithResponseStream
+                Resource:
+                  # Cross-region inference profile routes to multiple EU regions
+                  - "arn:aws:bedrock:*::foundation-model/amazon.nova-lite-v1:0"
+                  - !Sub "arn:aws:bedrock:eu-west-3:${AWS::AccountId}:inference-profile/eu.amazon.nova-lite-v1:0"
+
+  # Lambda Function
+  Vid30DiscoveryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: vid30-discovery
+      CodeUri: dist/
+      Handler: lambda/src/handler.handler
+      Role: !GetAtt Vid30DiscoveryFunctionRole.Arn
+      Events:
+        DiscoverPost:
+          Type: HttpApi
+          Properties:
+            Path: /discover
+            Method: POST
+            ApiId: !Ref Vid30HttpApi
+        HealthGet:
+          Type: HttpApi
+          Properties:
+            Path: /health
+            Method: GET
+            ApiId: !Ref Vid30HttpApi
+
+  # HTTP API Gateway (v2) — ~70% cheaper than REST API
+  Vid30HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      Name: vid30-discovery-api
+      StageName: prod
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowMethods:
+          - POST
+          - GET
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${Vid30HttpApi}.execute-api.eu-west-3.amazonaws.com/prod"
+  FunctionArn:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt Vid30DiscoveryFunction.Arn

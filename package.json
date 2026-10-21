@@ -19,6 +19,8 @@
     "dev:android": "yarn workspace @multi-tv/expo-multi-tv android",
     "dev:ios": "yarn workspace @multi-tv/expo-multi-tv ios",
     "dev:web": "yarn workspace @multi-tv/expo-multi-tv web",
+    "dev:web-mvp": "yarn workspace @multi-tv/web dev",
+    "build:web-mvp": "yarn workspace @multi-tv/web build",
     "dev:vega": "yarn workspace @multi-tv/vega start",
     "build:all": "yarn workspaces foreach -pt run build",
     "build:vega": "yarn workspace @multi-tv/vega run build",
@@ -33,6 +35,7 @@
   },
   "devDependencies": {
     "husky": "^9.1.6",
+    "mitt": "^3.0.1",
     "prettier": "^3.3.3"
   }
 }

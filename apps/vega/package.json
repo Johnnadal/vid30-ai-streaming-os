@@ -69,7 +69,7 @@
   },
   "kepler": {
     "projectType": "application",
-    "appName": "MultiTVVega",
+    "appName": "Vid30TVVega",
     "targets": [
       "tv"
     ]
