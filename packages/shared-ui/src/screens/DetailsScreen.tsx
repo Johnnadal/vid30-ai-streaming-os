@@ -32,7 +32,10 @@ export default function DetailsScreen() {
   const isFocused = useIsFocused();
 
   // Memoize image source to prevent unnecessary re-renders
-  const imageSource = useMemo(() => ({ uri: headerImage }), [headerImage]);
+  const imageSource = useMemo(
+    () => (typeof headerImage === 'string' ? { uri: headerImage } : headerImage),
+    [headerImage],
+  );
 
   // Memoize button style to prevent unnecessary re-renders
   const buttonStyle = useMemo(

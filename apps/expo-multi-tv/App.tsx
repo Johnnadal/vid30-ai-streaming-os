@@ -45,5 +45,5 @@ export default function App() {
     }
   }, [loaded, error]);
 
-  return <AppNavigator fontsLoaded={loaded || !!error} />;
+  return <AppNavigator fontsLoaded={loaded || !!error} logoSource={require('./assets/images/logo.png')} />;
 }

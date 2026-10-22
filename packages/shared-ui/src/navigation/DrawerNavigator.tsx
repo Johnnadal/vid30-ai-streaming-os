@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { StyleSheet, View, Platform, I18nManager } from 'react-native';
+import { StyleSheet, View, Platform, I18nManager, ImageSourcePropType } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useNavigation, DrawerActions, NavigationProp } from '@react-navigation/native';
@@ -35,14 +35,14 @@ function DrawerSyncWrapper({ drawerNavRef }: { drawerNavRef: React.MutableRefObj
   return null;
 }
 
-export default function DrawerNavigator() {
+export default function DrawerNavigator({ logoSource }: { logoSource?: ImageSourcePropType } = {}) {
   const styles = drawerStyles;
   const { isOpen: isMenuOpen } = useMenuContext();
   const drawerNavRef = useRef<NavigationProp<DrawerParamList> | null>(null);
 
   const navigationContent = (
       <Drawer.Navigator
-        drawerContent={CustomDrawerContent}
+        drawerContent={(props) => <CustomDrawerContent {...props} logoSource={logoSource} />}
         initialRouteName="Home"
         defaultStatus="open"
         screenOptions={{

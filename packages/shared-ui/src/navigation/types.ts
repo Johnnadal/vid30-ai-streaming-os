@@ -1,10 +1,12 @@
+import type { ImageSourcePropType } from 'react-native';
+
 export type RootStackParamList = {
   DrawerNavigator: undefined;
   Details: {
     title: string;
     description: string;
-    headerImage: string;
-    movie: string;
+    headerImage: ImageSourcePropType | string;
+    movie: number | string | { uri: string };
     category?: string;
     genres?: string[];
     releaseYear?: number;
@@ -14,8 +16,8 @@ export type RootStackParamList = {
     duration?: number;
   };
   Player: {
-    movie: string;
-    headerImage: string;
+    movie: number | string | { uri: string };
+    headerImage: ImageSourcePropType | string;
   };
 };
 

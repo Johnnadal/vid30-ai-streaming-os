@@ -1,6 +1,6 @@
 import React, { useEffect, StrictMode } from 'react';
 import { NavigationContainer, DarkTheme } from '@react-navigation/native';
-import { Platform } from 'react-native';
+import { ImageSourcePropType, Platform } from 'react-native';
 import { MenuProvider } from '../components/MenuContext';
 import { GoBackConfiguration } from '../app/remote-control/GoBackConfiguration';
 import RootNavigator from './RootNavigator';
@@ -8,9 +8,10 @@ import RootNavigator from './RootNavigator';
 export interface AppNavigatorProps {
   fontsLoaded?: boolean;
   onReady?: () => void;
+  logoSource?: ImageSourcePropType;
 }
 
-export default function AppNavigator({ fontsLoaded = true, onReady }: AppNavigatorProps) {
+export default function AppNavigator({ fontsLoaded = true, onReady, logoSource }: AppNavigatorProps) {
   useEffect(() => {
     // Import remote control config for TV platforms
     if (Platform.isTV) {
@@ -37,7 +38,7 @@ export default function AppNavigator({ fontsLoaded = true, onReady }: AppNavigat
       <NavigationContainer theme={DarkTheme}>
         <MenuProvider>
           <GoBackConfiguration />
-          <RootNavigator />
+          <RootNavigator logoSource={logoSource} />
         </MenuProvider>
       </NavigationContainer>
     </StrictMode>

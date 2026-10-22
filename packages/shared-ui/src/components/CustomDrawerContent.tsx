@@ -1,6 +1,6 @@
 import { scaledPixels } from '../hooks/useScale';
 import { DrawerContentComponentProps, DrawerContentScrollView } from '@react-navigation/drawer';
-import { View, StyleSheet, Image, Platform, Text } from 'react-native';
+import { View, StyleSheet, Image, Platform, Text, ImageSourcePropType } from 'react-native';
 import { DefaultFocus, SpatialNavigationFocusableView, SpatialNavigationRoot } from 'react-tv-space-navigation';
 import { DrawerParamList } from '../navigation/types';
 import { useMenuContext } from '../components/MenuContext';
@@ -9,8 +9,11 @@ import { useCallback } from 'react';
 import { Direction } from '@bam.tech/lrud';
 import { getCloseDrawerDirection } from '../utils/rtl';
 
-export default function CustomDrawerContent(props: DrawerContentComponentProps) {
+export default function CustomDrawerContent(
+  props: DrawerContentComponentProps & { logoSource?: ImageSourcePropType },
+) {
   const navigation = props.navigation;
+  const logoSource = props.logoSource ?? require('../assets/images/logo.png');
   const { isOpen: isMenuOpen, toggleMenu } = useMenuContext();
   const styles = drawerStyles;
   const drawerItems = [
@@ -43,7 +46,7 @@ export default function CustomDrawerContent(props: DrawerContentComponentProps) 
           }}
         >
           <View style={styles.header}>
-            <Image source={require('../assets/images/logo.png')} style={styles.profilePic} />
+            <Image source={logoSource} style={styles.profilePic} />
             <Text style={styles.appTitle}>Vid30 TV</Text>
             <Text style={styles.userName}>John N.</Text>
             <Text style={styles.switchAccount}>Switch account</Text>

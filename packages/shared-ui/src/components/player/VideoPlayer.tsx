@@ -1,14 +1,15 @@
 import React, { useMemo } from "react";
-import Video, { VideoRef } from "react-native-video";
+import Video, { ReactVideoSource, VideoRef } from "react-native-video";
 import {
   StyleSheet,
   Platform,
   useWindowDimensions,
+  ImageSourcePropType,
 } from "react-native";
 
 interface VideoPlayerProps {
-  movie: string;
-  headerImage: string;
+  movie: number | string | { uri: string };
+  headerImage: ImageSourcePropType | string;
   paused: boolean;
   controls: boolean;
   onBuffer: (isBuffering: boolean) => void;
@@ -35,7 +36,10 @@ const VideoPlayer = React.memo(
       const { width } = useWindowDimensions();
 
       // Memoize source object to prevent unnecessary re-renders
-      const videoSource = useMemo(() => ({ uri: movie }), [movie]);
+      const videoSource = useMemo<ReactVideoSource>(
+        () => (typeof movie === "string" ? { uri: movie } : (movie as ReactVideoSource)),
+        [movie],
+      );
 
       // Memoize poster object to prevent unnecessary re-renders
       const posterConfig = useMemo(
@@ -43,7 +47,7 @@ const VideoPlayer = React.memo(
           Platform.OS === "web"
             ? {}
             : {
-                source: { uri: headerImage },
+                source: typeof headerImage === "string" ? { uri: headerImage } : headerImage,
                 resizeMode: "cover" as const,
                 style: { width: "100%", height: "100%" },
               },

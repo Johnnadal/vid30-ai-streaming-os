@@ -23,6 +23,9 @@ import { getOpenDrawerDirection } from '../utils/rtl';
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'DrawerNavigator'>;
 
+const getImageSource = (source: number | string | { uri: string }) =>
+  typeof source === 'string' ? { uri: source } : source;
+
 // Memoized MovieItem component to prevent unnecessary re-renders and optimize image source
 const MovieItem = React.memo(
   ({
@@ -34,7 +37,7 @@ const MovieItem = React.memo(
     isFocused: boolean;
     styles: any;
   }) => {
-    const imageSource = useMemo(() => ({ uri: item.headerImage }), [item.headerImage]);
+    const imageSource = useMemo(() => getImageSource(item.headerImage), [item.headerImage]);
 
     return (
       <View style={[styles.highlightThumbnail, isFocused && styles.highlightThumbnailFocused]}>
@@ -85,7 +88,7 @@ export default function HomeScreen() {
 
   // Memoize header image source to prevent unnecessary re-renders
   const headerImageSource = useMemo(
-    () => (focusedItem ? { uri: focusedItem.headerImage } : undefined),
+    () => (focusedItem ? getImageSource(focusedItem.headerImage) : undefined),
     [focusedItem?.headerImage],
   );
 
