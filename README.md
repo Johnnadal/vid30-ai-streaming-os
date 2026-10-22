@@ -11,17 +11,7 @@
 
 ## Demo Video
 
-<!-- ─────────────────────────────────────────────────────────────────────────
-     PLACEHOLDER — Replace the two URLs below once the video is published.
-
-     DEMO_VIDEO_URL      → YouTube / Vimeo URL of the demo video
-     THUMBNAIL_IMAGE_URL → Direct URL to the video thumbnail image
-                           (e.g. https://img.youtube.com/vi/VIDEO_ID/maxresdefault.jpg)
-     ───────────────────────────────────────────────────────────────────────── -->
-
-[![Vid30 Demo — AI Film Discovery & Playback](https://via.placeholder.com/1280x720.png?text=Vid30+Demo+Video+%E2%80%94+Coming+Soon)](DEMO_VIDEO_URL)
-
-> 📹 *Demo video link to be added. Replace `DEMO_VIDEO_URL` and `THUMBNAIL_IMAGE_URL` above with real values once the video is published.*
+[![Vid30 Demo — AI Film Discovery & Playback on Fire TV](https://img.youtube.com/vi/hYhjoYZBDRY/maxresdefault.jpg)](https://youtu.be/hYhjoYZBDRY)
 
 ---
 
