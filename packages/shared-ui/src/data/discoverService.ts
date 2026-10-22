@@ -65,11 +65,6 @@ export type DiscoveryResultItem = {
    */
   guidelines: ContentGuidelines;
 };
-  /**
-   * Content origin: "catalog" for standard films, "founder" for Vid30 Originals.
-   */
-  origin: ContentOrigin;
-};
 
 export type DiscoverResponse = {
   intent: DiscoveryIntent;
