@@ -13,6 +13,9 @@
 
 [![Vid30 Demo — AI Film Discovery & Playback on Fire TV](https://img.youtube.com/vi/hYhjoYZBDRY/maxresdefault.jpg)](https://youtu.be/hYhjoYZBDRY)
 
+<!-- ![Vid30 — AI Streaming OS](./docs/vid30Hero.jpg) -->
+
+
 ---
 
 ## What is Vid30?

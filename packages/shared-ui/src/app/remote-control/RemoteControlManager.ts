@@ -9,6 +9,8 @@ const KEY_MAPPING: Record<string, SupportedKeys> = {
   ArrowUp: SupportedKeys.Up,
   ArrowDown: SupportedKeys.Down,
   Enter: SupportedKeys.Enter,
+  Escape: SupportedKeys.Back,
+  Esc: SupportedKeys.Back,
   Backspace: SupportedKeys.Back,
   GoBack: SupportedKeys.Back, // For LG WebOS Magic Remote
 };

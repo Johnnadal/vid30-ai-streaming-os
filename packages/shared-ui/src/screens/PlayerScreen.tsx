@@ -71,9 +71,6 @@ export default function PlayerScreen() {
         case SupportedKeys.FastForward:
           seek(currentTimeRef.current - 10);
           break;
-        case SupportedKeys.Back:
-          navigation.goBack();
-          break;
         case SupportedKeys.PlayPause:
           togglePausePlay();
           break;

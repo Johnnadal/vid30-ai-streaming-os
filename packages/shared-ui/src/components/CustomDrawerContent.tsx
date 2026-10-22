@@ -47,7 +47,6 @@ export default function CustomDrawerContent(
         >
           <View style={styles.header}>
             <Image source={logoSource} style={styles.profilePic} />
-            <Text style={styles.appTitle}>Vid30 TV</Text>
             <Text style={styles.userName}>John N.</Text>
             <Text style={styles.switchAccount}>Switch account</Text>
           </View>
@@ -137,6 +136,7 @@ const drawerStyles = StyleSheet.create({
     profilePic: {
       width: scaledPixels(200),
       height: scaledPixels(200),
+      alignSelf: 'center',
       borderRadius: scaledPixels(24),
       borderWidth: scaledPixels(4),
       borderColor: colors.border,
