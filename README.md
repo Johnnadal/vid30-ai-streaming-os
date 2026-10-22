@@ -1,4 +1,4 @@
-# Vid30 — AI Streaming Operating System
+# Vid30 an AI Streaming Operating System
 
 > **Amazon App Dev Hackathon 2026**  
 > Natural language film discovery and video playback for Smart TV, Fire TV, and web.
